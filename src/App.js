@@ -1,12 +1,15 @@
 import React from 'react';
-import './App.css';
-import Dapati from './dapati.js'
+import Header from './components/header';
+import SearchBar from './components/searchbar';
+import DisplayBox from './components/displaybox';
 
 function App() {
   return (
-    <>
-    <Dapati />
-    </>
+    <div>
+     <Header />
+     <SearchBar />
+     <DisplayBox />
+    </div>
   );
 }
 
