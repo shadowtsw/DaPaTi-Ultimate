@@ -7,5 +7,3 @@ all components share their name with their classes
 all modules should be saved in the 'modules' folder
 
 all components should be saved in the 'components' folder
-
-all .js files should converge in dapati.js
