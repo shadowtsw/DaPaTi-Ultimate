@@ -7,3 +7,11 @@ all components share their name with their classes
 all modules should be saved in the 'modules' folder
 
 all components should be saved in the 'components' folder
+
+
+*Main Application, where everything starts:*
+App.js
+Content will be our Application: "dapati.js" with the main class of "dapati"
+
+From dapati.js we can spread out and include each components via import
+
