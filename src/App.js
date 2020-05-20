@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import {Dapati} from 'dapati.js'
+import Dapati from './dapati.js'
 
 function App() {
   return (
