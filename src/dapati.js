@@ -1,4 +1,11 @@
 import React from 'react';
+import Toplocations from './toplocations/toplocations_sample';
+import Maincontent from './maincontent/maincontent_sample';
+import Userform from './userform/userform_example';
+import SearchQuery from './searchquery/search_query';
+import Uberschrift from './uberschrift/uberschrift_example';
+import fetch from './fetchAPI/fetch_sample';
+
 
 class Dapati extends React.Component {
     constructor(props) {
@@ -31,25 +38,30 @@ class Dapati extends React.Component {
         }
     }
 
+    async getData(){
+        await fetch.then(()=>{return null}).catch((err)=>{return err})
+    }
+
     render() {
         return (
             <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
                 <div className="topic" style={{ width: "80%", backgroundColor: "yellow", margin: "0 auto", textAlign: "center" }}>
-                    <h1>Uberschrift</h1>
+                    <Uberschrift text={"DaPaTi-Ultimate"}/>
                     <button name={this.state.buttonToggle} onClick={(eve) => { this.rembemberLogin(eve) }}>{this.state.buttonToggle}</button>
                 </div>
                 <div className="topLocations" style={{ width: "80%", backgroundColor: "red", margin: "0 auto", textAlign: "center" }}>
-                    <p>TOP Locations</p>
+                    <Toplocations />
                 </div>
                 <div className="searchQuery" style={{ width: "80%", backgroundColor: "green", margin: "0 auto", textAlign: "center" }}>
-                    <p>SEARCH Query</p>
+                    <SearchQuery />
                 </div>
                 <div className="bodyField" style={{ width: "80%", backgroundColor: "blue", margin: "0 auto", display: "flex", flexDirection: "row" }}>
                     <div className="contentField" style={{ width: "70%", backgroundColor: "black" }}>
-                        <p style={{ color: "white" }}>Content</p>
+                        <Maincontent />
                     </div>
                     <div className="userForm" style={{ width: "30%", height: "200px", backgroundColor: "pink" }}>
                         <p>Userform</p>
+                        <Userform />
                     </div>
                 </div>
             </div>
