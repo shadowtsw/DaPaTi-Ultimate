@@ -79,7 +79,7 @@ class Dapati extends React.Component {
             this.setState({ regButtonToggle: "Register" });
             this.setState({ token: "" })
         } else {
-            if (this.state.token !== "" || this.state.token !== null || this.state.token !== undefined) {
+            if (this.state.token === "" || this.state.token === null || this.state.token === undefined) {
                 alert("Keine gültigen Userdaten vorhanden ! Bitte neu einloggen")
             }
             else {
@@ -104,21 +104,32 @@ class Dapati extends React.Component {
     }
     userLogin = (userInformation, container = "userWaste") => {
         API.userLogin(this.state.serverUrl, userInformation)
-            .then((res) => { this.setState({ token: res.token }); this.rembemberLogin(); this.setState({ [container]: res }); console.log(res) })
+            .then((res) => { this.setState({ token: res.token }); this.setState({ [container]: res }); console.log(res) })
+            .then(()=>{this.rembemberLogin()})
             .catch((err) => { return err })
     }
 
-
+    onSubmit = (eve) => {
+        eve.preventDefault();
+        let body = {
+            email : eve.target[0].value,
+            password : eve.target[1].value.toString()
+        }
+        if (eve.target[0].value && eve.target[1].value) {
+            this.userLogin(body,"userLoginResponse")
+            console.log(body)
+        }
+    }
 
     render() {
         return (
             <>
-                <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle} />
+                <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
                 <button onClick={() => { this.getData(this.state.endpoints.getAd, "", "waste") }}>Waste</button>
                 <button onClick={() => { this.getData(this.state.endpoints.getAd, "", "somewhere") }}>Somewhere</button>
                 <button onClick={() => { this.userLogin({ email: "", password: "" }) }}>Login</button>
                 <SearchArea />
-                <LoginForm />
+                <LoginForm onSubmit={(eve)=>{this.onSubmit(eve)}}/>
                 <PostAdForm submitHandler={this.submitHandler} />
                 <RegistryForm />
                 <DisplayBox ads={this.state.serverResponseGet} />

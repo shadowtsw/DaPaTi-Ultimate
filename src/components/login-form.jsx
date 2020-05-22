@@ -1,9 +1,9 @@
 import React from "react";
 import "react-bulma-components/dist/react-bulma-components.min.css";
 
-function LoginForm(params) {
+function LoginForm(props) {
   return (
-  <form>
+  <form onSubmit={props.onSubmit}>
   <div id="loginform" className="box column is-three-fifths is-offset-one-fifth is-hidden">
 
     <div className="field">
@@ -24,7 +24,7 @@ function LoginForm(params) {
 
     <div className="field is-grouped">
       <div className="control">
-        <button className="button is-link">Submit</button>
+        <button className="button is-link" type="submit">Submit</button>
       </div>
       <div className="control">
         <button className="button is-link is-light">Cancel</button>
