@@ -8,7 +8,7 @@ function showLoginForm() {
 }
 
 function LoginBtn(props) {
-    return(<Button className="is-info column is-1 is-offset-8" onClick={showLoginForm}>{props.text}</Button>)
+    return(<Button className='is-info pagination-link' onClick={showLoginForm}>{props.text}</Button>)
 }
 
 export default LoginBtn;

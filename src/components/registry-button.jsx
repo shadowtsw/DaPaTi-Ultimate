@@ -8,7 +8,7 @@ function showRegForm() {
 }
 
 function RegBtn(props) {
-    return(<Button className="is-info column is-1 is-offset-one-quarter" onClick={showRegForm}>{props.text}</Button>)
+    return(<Button className='is-info pagination-link' onClick={showRegForm}>{props.text}</Button>)
 }
 
 export default RegBtn;

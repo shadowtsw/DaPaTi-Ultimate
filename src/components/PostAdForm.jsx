@@ -6,7 +6,7 @@ function PostAdForm(props) {
 
 
     return (
-        <form onSubmit={(eve) => props.submitHandler(eve)}>
+        <form id="postadform" className="is-hidden" onSubmit={(eve) => props.submitHandler(eve)}>
             <div className="box column is-three-fifths is-offset-one-fifth">
 
                 <div className="field">
