@@ -41,7 +41,7 @@ export async function apiAccessGet(url = "", endpoint = "", implementMethod = ""
             method: implementMethod,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer${token}`
+                'Authorization': `Bearer ${token}`
             },
             // body: data
         });

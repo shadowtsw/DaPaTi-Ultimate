@@ -19,7 +19,8 @@ class Dapati extends React.Component {
             token: localStorage.getItem('token'),
             serverUrl: "https://awacademy-kleinanzeigen.azurewebsites.net/",
             endpoints: {
-                getAd: "ad"
+                getAd: "ad",
+                user: "user"
             },
             serverResponseGet: null,
             serverResponsePost: null,
@@ -55,7 +56,7 @@ class Dapati extends React.Component {
         
         
     }
-    
+
     componentDidMount() {
         this.getData('ad');
         if (this.state.loggedIn === "true" && (this.state.token !== ""||this.state.token !== undefined||this.state.token !== null) ) {
@@ -72,13 +73,14 @@ class Dapati extends React.Component {
     rembemberLogin(eve) {
         if (this.state.loggedIn === "true") {
             localStorage.removeItem("loggedIn")
-            localStorage.removeItem("token",this.state.token)
+            localStorage.removeItem("token", this.state.token)
             this.setState({ loggedIn: "false" })
             this.setState({ logButtonToggle: "Login" })
             this.setState({ regButtonToggle: "Register" })
+            this.setState({ token: "" })
         } else {
             localStorage.setItem("loggedIn", "true");
-            localStorage.setItem("token",this.state.token)
+            localStorage.setItem("token", this.state.token)
             this.setState({ loggedIn: "true" });
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
@@ -86,20 +88,20 @@ class Dapati extends React.Component {
         }
     }
 
-    getData=(endpoint,token="")=>{
-        API.apiAccessGet(this.state.serverUrl,endpoint,"GET",token)
-        .then((res)=>{this.setState({serverResponseGet: res}); console.log(res)})
-        .catch((err)=>{return err})
+    getData = (endpoint, token = "") => {
+        API.apiAccessGet(this.state.serverUrl, endpoint, "GET", token)
+            .then((res) => { this.setState({ serverResponseGet: res }); console.log(res) })
+            .catch((err) => { return err })
     }
-    postData=(endpoint,token,body={})=>{
-        API.apiAccessPost(this.state.serverUrl,endpoint,"POST",token,body)
-        .then((res)=>{this.setState({serverResponsePost: res}); console.log(res)})
-        .catch((err)=>{return err})
+    postData = (endpoint, token, body = {}) => {
+        API.apiAccessPost(this.state.serverUrl, endpoint, "POST", token, body)
+            .then((res) => { this.setState({ serverResponsePost: res }); console.log(res) })
+            .catch((err) => { return err })
     }
-    userLogin=(userInformation)=>{
-        API.userLogin(this.state.serverUrl,userInformation)
-        .then((res)=>{this.setState({token: res.token})})
-        .catch((err)=>{return err})
+    userLogin = (userInformation) => {
+        API.userLogin(this.state.serverUrl, userInformation)
+            .then((res) => { this.setState({ token: res.token }); this.rembemberLogin(); console.log(res) })
+            .catch((err) => { return err })
     }
 
 
