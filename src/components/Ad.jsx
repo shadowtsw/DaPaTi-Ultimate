@@ -4,7 +4,7 @@ function Ad(props) {
 
     return (
         <article className="box">
-            <h3>{props.ad.title}</h3>
+            <h3 className="title">{props.ad.title}</h3>
             <p>{props.ad.description}</p>            
         </article>
     )
