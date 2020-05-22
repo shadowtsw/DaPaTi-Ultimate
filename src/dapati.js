@@ -5,6 +5,7 @@ import SearchArea from './components/search-area';
 import RegistryForm from './components/registry-form';
 import DisplayBox from './components/displaybox';
 import LoginForm from './components/login-form';
+import PostAdForm from './components/PostAdForm'
 import API from './API/fetch_methods'
 
 
@@ -31,16 +32,28 @@ class Dapati extends React.Component {
         }
     }
 
-    handleFormChange = (eve) => {
+    submitHandler = (eve) => {
+        eve.preventDefault();
+        console.log(eve.target)
+        const adData = {
+            title: eve.target[0].value,
+            name: eve.target[1].value,
+            location: eve.target[2].value,
+            email: eve.target[3].value,
+            description: eve.target[4].value,
+            price: +eve.target[5].value,
+            priceNegotiable: eve.target[6].checked ? true: false
+        }
+        
+        this.setState({
+            formValues: adData
+        })
 
-        let name = eve.target.name;
-        let value = eve.target.value; 
+        const token = this.state.token
+        this.postData('ad',token, adData);
 
-       this.setState({
-           formValues: {
-               [name]: value
-           }
-       })
+        
+        
     }
     
     componentDidMount() {
@@ -99,7 +112,8 @@ class Dapati extends React.Component {
             <button onClick={()=>{this.userLogin({email:"", password:""})}}>Login</button>
             <SearchArea />
             <LoginForm />
-            <RegistryForm  handleChange={this.handleFormChange} />
+            <PostAdForm submitHandler={this.submitHandler}/>
+            <RegistryForm  />
             <DisplayBox ads={this.state.serverResponseGet}/>
         </>
            
