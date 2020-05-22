@@ -43,23 +43,23 @@ class Dapati extends React.Component {
             email: eve.target[3].value,
             description: eve.target[4].value,
             price: +eve.target[5].value,
-            priceNegotiable: eve.target[6].checked ? true: false
+            priceNegotiable: eve.target[6].checked ? true : false
         }
-        
+
         this.setState({
             formValues: adData
         })
 
         const token = this.state.token
-        this.postData('ad',token, adData);
+        this.postData('ad', token, adData);
 
-        
-        
+
+
     }
 
     componentDidMount() {
         this.getData('ad');
-        if (this.state.loggedIn === "true" && (this.state.token !== ""||this.state.token !== undefined||this.state.token !== null) ) {
+        if (this.state.loggedIn === "true" && (this.state.token !== "" || this.state.token !== undefined || this.state.token !== null)) {
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
             console.log('eingeloggt')
@@ -72,35 +72,39 @@ class Dapati extends React.Component {
 
     rembemberLogin(eve) {
         if (this.state.loggedIn === "true") {
-            localStorage.removeItem("loggedIn")
-            localStorage.removeItem("token", this.state.token)
-            this.setState({ loggedIn: "false" })
-            this.setState({ logButtonToggle: "Login" })
-            this.setState({ regButtonToggle: "Register" })
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("token", this.state.token);
+            this.setState({ loggedIn: "false" });
+            this.setState({ logButtonToggle: "Login" });
+            this.setState({ regButtonToggle: "Register" });
             this.setState({ token: "" })
         } else {
-            localStorage.setItem("loggedIn", "true");
-            localStorage.setItem("token", this.state.token)
-            this.setState({ loggedIn: "true" });
-            this.setState({ logButtonToggle: "Logout" })
-            this.setState({ regButtonToggle: "Un-Register" })
-
+            if (this.state.token !== "" || this.state.token !== null || this.state.token !== undefined) {
+                alert("Keine gültigen Userdaten vorhanden ! Bitte neu einloggen")
+            }
+            else {
+                localStorage.setItem("loggedIn", "true");
+                localStorage.setItem("token", this.state.token);
+                this.setState({ loggedIn: "true" });
+                this.setState({ logButtonToggle: "Logout" });
+                this.setState({ regButtonToggle: "Un-Register" })
+            }
         }
     }
 
-    getData = (endpoint, token = "") => {
+    getData = (endpoint, token = "", container = "getWaste") => {
         API.apiAccessGet(this.state.serverUrl, endpoint, "GET", token)
-            .then((res) => { this.setState({ serverResponseGet: res }); console.log(res) })
+            .then((res) => { this.setState({ serverResponseGet: res }); this.setState({ [container]: res }); console.log(res) })
             .catch((err) => { return err })
     }
-    postData = (endpoint, token, body = {}) => {
+    postData = (endpoint, token, body = {}, container = "postWaste") => {
         API.apiAccessPost(this.state.serverUrl, endpoint, "POST", token, body)
-            .then((res) => { this.setState({ serverResponsePost: res }); console.log(res) })
+            .then((res) => { this.setState({ serverResponsePost: res }); this.setState({ [container]: res }); console.log(res) })
             .catch((err) => { return err })
     }
-    userLogin = (userInformation) => {
+    userLogin = (userInformation, container = "userWaste") => {
         API.userLogin(this.state.serverUrl, userInformation)
-            .then((res) => { this.setState({ token: res.token }); this.rembemberLogin(); console.log(res) })
+            .then((res) => { this.setState({ token: res.token }); this.rembemberLogin(); this.setState({ [container]: res }); console.log(res) })
             .catch((err) => { return err })
     }
 
@@ -108,17 +112,18 @@ class Dapati extends React.Component {
 
     render() {
         return (
-        <>
-            <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
-            <button onClick={()=>{this.getData(this.state.endpoints.getAd)}}>TEST</button>
-            <button onClick={()=>{this.userLogin({email:"", password:""})}}>Login</button>
-            <SearchArea />
-            <LoginForm />
-            <PostAdForm submitHandler={this.submitHandler}/>
-            <RegistryForm  />
-            <DisplayBox ads={this.state.serverResponseGet}/>
-        </>
-           
+            <>
+                <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle} />
+                <button onClick={() => { this.getData(this.state.endpoints.getAd, "", "waste") }}>Waste</button>
+                <button onClick={() => { this.getData(this.state.endpoints.getAd, "", "somewhere") }}>Somewhere</button>
+                <button onClick={() => { this.userLogin({ email: "", password: "" }) }}>Login</button>
+                <SearchArea />
+                <LoginForm />
+                <PostAdForm submitHandler={this.submitHandler} />
+                <RegistryForm />
+                <DisplayBox ads={this.state.serverResponseGet} />
+            </>
+
             // <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
             //     <div className="topic" style={{ width: "80%", backgroundColor: "yellow", margin: "0 auto", textAlign: "center" }}>
             //         <Uberschrift text={"DaPaTi-Ultimate"}/>
