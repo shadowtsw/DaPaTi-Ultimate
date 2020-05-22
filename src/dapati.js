@@ -18,7 +18,7 @@ class Dapati extends React.Component {
             token: null,
             serverUrl: "https://awacademy-kleinanzeigen.azurewebsites.net/",
             endpoints: {
-                getAd: "ad/"
+                getAd: "ad"
             },
             serverResponse: null,
             apiAccessParam: {
@@ -59,7 +59,8 @@ class Dapati extends React.Component {
 
     getData=()=>{
         // Params for Fetch --> || url = "",endpoint="",implementMethod = "",data = {}, token = "" ||
-        apiAccess(this.state.serverUrl,this.state.endpoints.getAd,"GET") //,this.state.apiAccessParam.data,this.state.apiAccessParam.token,this.state.apiAccessParam.implementMethod
+        const filterParam = encodeURIComponent('{"limit": "20"}');
+        apiAccess(this.state.serverUrl,this.state.endpoints.getAd+'?filter='+filterParam,"GET") //,this.state.apiAccessParam.data,this.state.apiAccessParam.token,this.state.apiAccessParam.implementMethod
         .then((res)=>{this.setState({serverResponse: res})})
         .catch((err)=>{return err})
     }
