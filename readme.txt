@@ -15,3 +15,9 @@ Content will be our Application: "dapati.js" with the main class of "dapati"
 
 From dapati.js we can spread out and include each components via import
 
+-- for testing purpose --
+First Structure was build:
+Each folder contains a file which is assigned to our main-file dapati.js
+This allows everyone to work on a single file
+Each file has an default export according to the main function
+
