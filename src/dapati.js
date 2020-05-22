@@ -18,7 +18,7 @@ class Dapati extends React.Component {
             token: localStorage.getItem('token'),
             serverUrl: "https://awacademy-kleinanzeigen.azurewebsites.net/",
             endpoints: {
-                getAd: "ad/"
+                getAd: "ad"
             },
             serverResponseGet: null,
             serverResponsePost: null,
@@ -29,7 +29,7 @@ class Dapati extends React.Component {
             }
         }
     }
-
+    
     componentDidMount() {
         if (this.state.loggedIn === "true" && (this.state.token !== ""||this.state.token !== undefined||this.state.token !== null) ) {
             this.setState({ logButtonToggle: "Logout" })
@@ -75,6 +75,8 @@ class Dapati extends React.Component {
         .catch((err)=>{return err})
     }
 
+
+
     render() {
         return (
         <>
@@ -83,7 +85,8 @@ class Dapati extends React.Component {
             <SearchArea />
             <LoginForm />
             <RegistryForm />
-            <DisplayBox />
+            <DisplayBox ads={this.state.serverResponse}/>
+            <button onClick={this.getData}>Get Data</button>
         </>
            
             // <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
