@@ -18,7 +18,8 @@ class Dapati extends React.Component {
             token: localStorage.getItem('token'),
             serverUrl: "https://awacademy-kleinanzeigen.azurewebsites.net/",
             endpoints: {
-                getAd: "ad"
+                getAd: "ad",
+                user: "user"
             },
             serverResponseGet: null,
             serverResponsePost: null,
@@ -34,17 +35,17 @@ class Dapati extends React.Component {
     handleFormChange = (eve) => {
 
         let name = eve.target.name;
-        let value = eve.target.value; 
+        let value = eve.target.value;
 
-       this.setState({
-           formValues: {
-               [name]: value
-           }
-       })
+        this.setState({
+            formValues: {
+                [name]: value
+            }
+        })
     }
-    
+
     componentDidMount() {
-        if (this.state.loggedIn === "true" && (this.state.token !== ""||this.state.token !== undefined||this.state.token !== null) ) {
+        if (this.state.loggedIn === "true" && (this.state.token !== "" || this.state.token !== undefined || this.state.token !== null)) {
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
             console.log('eingeloggt')
@@ -58,13 +59,14 @@ class Dapati extends React.Component {
     rembemberLogin(eve) {
         if (this.state.loggedIn === "true") {
             localStorage.removeItem("loggedIn")
-            localStorage.removeItem("token",this.state.token)
+            localStorage.removeItem("token", this.state.token)
             this.setState({ loggedIn: "false" })
             this.setState({ logButtonToggle: "Login" })
             this.setState({ regButtonToggle: "Register" })
+            this.setState({ token: "" })
         } else {
             localStorage.setItem("loggedIn", "true");
-            localStorage.setItem("token",this.state.token)
+            localStorage.setItem("token", this.state.token)
             this.setState({ loggedIn: "true" });
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
@@ -72,37 +74,38 @@ class Dapati extends React.Component {
         }
     }
 
-    getData=(endpoint,token="")=>{
-        API.apiAccessGet(this.state.serverUrl,endpoint,"GET",token)
-        .then((res)=>{this.setState({serverResponseGet: res}); console.log(res)})
-        .catch((err)=>{return err})
+    getData = (endpoint, token = "") => {
+        API.apiAccessGet(this.state.serverUrl, endpoint, "GET", token)
+            .then((res) => { this.setState({ serverResponseGet: res }); console.log(res) })
+            .catch((err) => { return err })
     }
-    postData=(endpoint,token,body={})=>{
-        API.apiAccessPost(this.state.serverUrl,endpoint,"POST",token,body)
-        .then((res)=>{this.setState({serverResponsePost: res}); console.log(res)})
-        .catch((err)=>{return err})
+    postData = (endpoint, token, body = {}) => {
+        API.apiAccessPost(this.state.serverUrl, endpoint, "POST", token, body)
+            .then((res) => { this.setState({ serverResponsePost: res }); console.log(res) })
+            .catch((err) => { return err })
     }
-    userLogin=(userInformation)=>{
-        API.userLogin(this.state.serverUrl,userInformation)
-        .then((res)=>{this.setState({token: res.token})})
-        .catch((err)=>{return err})
+    userLogin = (userInformation) => {
+        API.userLogin(this.state.serverUrl, userInformation)
+            .then((res) => { this.setState({ token: res.token }); this.rembemberLogin(); console.log(res) })
+            .catch((err) => { return err })
     }
 
 
 
     render() {
         return (
-        <>
-            <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
-            <button onClick={()=>{this.getData(this.state.endpoints.getAd)}}>TEST</button>
-            <button onClick={()=>{this.userLogin({email:"", password:""})}}>Login</button>
-            <SearchArea />
-            <LoginForm />
-            <RegistryForm  handleChange={this.handleFormChange} />
-            <DisplayBox ads={this.state.serverResponse}/>
-            <button onClick={this.getData}>Get Data</button>
-        </>
-           
+            <>
+                <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle} />
+                <button onClick={() => { this.getData(this.state.endpoints.getAd) }}>TEST</button>
+                <button onClick={() => { this.userLogin({ email: "shadow_tsw@web.de", password: "654321"}) }}>Login</button>
+                <button onClick={() => { this.getData("user/me", this.state.token) }}>Get Info about ME</button>
+                <SearchArea />
+                <LoginForm />
+                <RegistryForm handleChange={this.handleFormChange} />
+                <DisplayBox ads={this.state.serverResponse} />
+                <button onClick={this.getData}>Get Data</button>
+            </>
+
             // <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
             //     <div className="topic" style={{ width: "80%", backgroundColor: "yellow", margin: "0 auto", textAlign: "center" }}>
             //         <Uberschrift text={"DaPaTi-Ultimate"}/>
