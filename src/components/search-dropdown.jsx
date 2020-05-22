@@ -1,6 +1,5 @@
 import React from 'react';
 import 'react-bulma-components/dist/react-bulma-components.min.css';
-import { Hero } from 'react-bulma-components/dist';
 import SearchBar from './searchbar';
 
 function SearchDropdown() {
