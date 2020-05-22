@@ -1,15 +1,15 @@
 import React from 'react';
-// import apiAccess from './fetchAPI/fetch_sample';
 import Header from './components/header';
 import SearchArea from './components/search-area';
 import RegistryForm from './components/registry-form';
 import DisplayBox from './components/displaybox';
 import LoginForm from './components/login-form';
-import PostAdForm from './components/PostAdForm'
-import API from './API/fetch_methods'
+import PostAdForm from './components/PostAdForm';
+import API from './API/fetch_methods';
 
 
 class Dapati extends React.Component {
+    
     constructor(props) {
         super(props)
         this.state = {
@@ -29,9 +29,18 @@ class Dapati extends React.Component {
                 token: null,
                 implementMethod: "GET"
             },
-            formValues: {}
+            formValues: {
+            },
+            showForm: {
+                reg: false,
+                login: false,
+                newad: false
+            },
+            test: ''
         }
+        this.showForm = this.showForm.bind(this); //makes sure every time showForm is invoked, the 'this' links to the Dapati class
     }
+    
 
     submitHandler = (eve) => {
         eve.preventDefault();
@@ -94,7 +103,7 @@ class Dapati extends React.Component {
 
     getData = (endpoint, token = "", container = "getWaste") => {
         API.apiAccessGet(this.state.serverUrl, endpoint, "GET", token)
-            .then((res) => { this.setState({ serverResponseGet: res }); this.setState({ [container]: res }); console.log(res) })
+            .then((res) => { this.setState({ serverResponseGet: res }); this.setState({ [container]: res }); /*console.log(res)*/ }) //commented bcs that console.log was annoying
             .catch((err) => { return err })
     }
     postData = (endpoint, token, body = {}, container = "postWaste") => {
@@ -121,42 +130,27 @@ class Dapati extends React.Component {
         }
     }
 
+    showForm(param) {
+        let dummy = {...this.state.showForm}; //dummy obj for sorting
+        dummy[param]=!dummy[param]; //toggles value of the showForm state (equivalent)
+        let forms = Object.keys(dummy).filter((item) => item!==param); //lists other states in showForm (equivalent)
+        forms.forEach(key => dummy[key]=false); //sets all others to false (so no two forms are open at the same time)
+        this.setState(({ showForm: dummy })); //sets the (actual) showForm state to that of the updated dummy
+      }
+
     render() {
         return (
             <>
-                <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
+                <Header update={this.showForm} logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
                 <button onClick={() => { this.getData(this.state.endpoints.getAd, "", "waste") }}>Waste</button>
                 <button onClick={() => { this.getData(this.state.endpoints.getAd, "", "somewhere") }}>Somewhere</button>
                 <button onClick={() => { this.userLogin({ email: "", password: "" }) }}>Login</button>
                 <SearchArea />
-                <LoginForm onSubmit={(eve)=>{this.onSubmit(eve)}}/>
-                <PostAdForm submitHandler={this.submitHandler} />
-                <RegistryForm />
+                <LoginForm showForm={this.state.showForm.login} onSubmit={(eve)=>{this.onSubmit(eve)}}/>
+                <PostAdForm showForm={this.state.showForm.newad} show={this.formValues} submitHandler={this.submitHandler} />
+                <RegistryForm showForm={this.state.showForm.reg}/>
                 <DisplayBox ads={this.state.serverResponseGet} />
             </>
-
-            // <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
-            //     <div className="topic" style={{ width: "80%", backgroundColor: "yellow", margin: "0 auto", textAlign: "center" }}>
-            //         <Uberschrift text={"DaPaTi-Ultimate"}/>
-            //         <button name={this.state.logButtonToggle} onClick={(eve) => { this.rembemberLogin(eve) }}>{this.state.logButtonToggle}</button>
-            //     </div>
-            //     <div className="topLocations" style={{ width: "80%", backgroundColor: "red", margin: "0 auto", textAlign: "center" }}>
-            //         <Toplocations />
-            //     </div>
-            //     <div className="searchQuery" style={{ width: "80%", backgroundColor: "green", margin: "0 auto", textAlign: "center" }}>
-            //         <SearchQuery />
-            //     </div>
-            //     <div className="bodyField" style={{ width: "80%", backgroundColor: "blue", margin: "0 auto", display: "flex", flexDirection: "row" }}>
-            //         <div className="contentField" style={{ width: "70%", backgroundColor: "black" }}>
-            //             <button name="refresh" onClick={this.getData}>refresh</button>
-            //             <Maincontent title="Testtitle"/>
-            //         </div>
-            //         <div className="userForm" style={{ width: "30%", height: "200px", backgroundColor: "pink" }}>
-            //             <p>Userform</p>
-            //             <Userform />
-            //         </div>
-            //     </div>
-            // </div>
         )
     }
 }

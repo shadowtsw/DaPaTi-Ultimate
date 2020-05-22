@@ -13,9 +13,9 @@ function Header(props) {
       </div>
       <nav className="pagination is-centered" role="navigation" aria-label="pagination">
             <ul className="pagination-list">
-                <li><NewAdBtn /></li>
-                <li><LoginBtn text={props.logButtonToggle} onClick={props.onClick}/></li>
-                <li><RegBtn text={props.regButtonToggle}/></li>
+                <li><NewAdBtn update={props.update} /></li>
+                <li><LoginBtn text={props.logButtonToggle} update={props.update}/></li>
+                <li><RegBtn text={props.regButtonToggle} update={props.update}/></li>
             </ul>
         </nav>
     </Hero>
