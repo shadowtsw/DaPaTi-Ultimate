@@ -4,7 +4,7 @@ import Maincontent from './maincontent/maincontent_sample';
 import Userform from './userform/userform_example';
 import SearchQuery from './searchquery/search_query';
 import Uberschrift from './uberschrift/uberschrift_example';
-import fetch from './fetchAPI/fetch_sample';
+import apiAccess from './fetchAPI/fetch_sample';
 
 
 class Dapati extends React.Component {
@@ -12,7 +12,18 @@ class Dapati extends React.Component {
         super(props)
         this.state = {
             loggedIn: localStorage.getItem('loggedIn'),
-            buttonToggle: ""
+            buttonToggle: "",
+            token: null,
+            serverUrl: "https://awacademy-kleinanzeigen.azurewebsites.net/",
+            endpoints: {
+                getAd: "ad/"
+            },
+            serverResponse: null,
+            apiAccessParam: {
+                data: {},
+                token: null,
+                implementMethod: "GET"
+            }
         }
     }
 
@@ -38,8 +49,10 @@ class Dapati extends React.Component {
         }
     }
 
-    async getData(){
-        await fetch.then(()=>{return null}).catch((err)=>{return err})
+    getData=()=>{
+        apiAccess(`${this.state.serverUrl}${this.state.endpoints.getAd}`) //,this.state.apiAccessParam.data,this.state.apiAccessParam.token,this.state.apiAccessParam.implementMethod
+        .then((res)=>{this.setState({serverResponse: res})})
+        .catch((err)=>{return err})
     }
 
     render() {
@@ -57,7 +70,8 @@ class Dapati extends React.Component {
                 </div>
                 <div className="bodyField" style={{ width: "80%", backgroundColor: "blue", margin: "0 auto", display: "flex", flexDirection: "row" }}>
                     <div className="contentField" style={{ width: "70%", backgroundColor: "black" }}>
-                        <Maincontent />
+                        <button name="refresh" onClick={this.getData}>refresh</button>
+                        <Maincontent title="Testtitle"/>
                     </div>
                     <div className="userForm" style={{ width: "30%", height: "200px", backgroundColor: "pink" }}>
                         <p>Userform</p>
