@@ -5,6 +5,7 @@ import SearchArea from './components/search-area';
 import RegistryForm from './components/registry-form';
 import DisplayBox from './components/displaybox';
 import LoginForm from './components/login-form';
+import apiAccess from './API/fetch_methods'
 
 
 class Dapati extends React.Component {
@@ -56,9 +57,10 @@ class Dapati extends React.Component {
     }
 
     getData=()=>{
-        // apiAccess(`${this.state.serverUrl}${this.state.endpoints.getAd}`) //,this.state.apiAccessParam.data,this.state.apiAccessParam.token,this.state.apiAccessParam.implementMethod
-        // .then((res)=>{this.setState({serverResponse: res})})
-        // .catch((err)=>{return err})
+        // Params for Fetch --> || url = "",endpoint="",implementMethod = "",data = {}, token = "" ||
+        apiAccess(this.state.serverUrl,this.state.endpoints.getAd,"GET") //,this.state.apiAccessParam.data,this.state.apiAccessParam.token,this.state.apiAccessParam.implementMethod
+        .then((res)=>{this.setState({serverResponse: res})})
+        .catch((err)=>{return err})
     }
 
     render() {
