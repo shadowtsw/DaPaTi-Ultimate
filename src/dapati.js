@@ -28,8 +28,9 @@ class Dapati extends React.Component {
             }
         }
     }
-
+    
     componentDidMount() {
+        this.getData();
         if (this.state.loggedIn === "true") {
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
@@ -63,6 +64,8 @@ class Dapati extends React.Component {
         .catch((err)=>{return err})
     }
 
+
+
     render() {
         return (
         <>
@@ -70,7 +73,8 @@ class Dapati extends React.Component {
             <SearchArea />
             <LoginForm />
             <RegistryForm />
-            <DisplayBox />
+            <DisplayBox ads={this.state.serverResponse}/>
+            <button onClick={this.getData}>Get Data</button>
         </>
            
             // <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
