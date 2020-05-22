@@ -45,7 +45,8 @@ class Dapati extends React.Component {
     }
 
     componentDidMount() {
-        if (this.state.loggedIn === "true" && (this.state.token !== "" || this.state.token !== undefined || this.state.token !== null)) {
+        this.getData('ad');
+        if (this.state.loggedIn === "true" && (this.state.token !== ""||this.state.token !== undefined||this.state.token !== null) ) {
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
             console.log('eingeloggt')
@@ -103,7 +104,6 @@ class Dapati extends React.Component {
                 <LoginForm />
                 <RegistryForm handleChange={this.handleFormChange} />
                 <DisplayBox ads={this.state.serverResponse} />
-                <button onClick={this.getData}>Get Data</button>
             </>
 
             // <div className="mainApp" style={{ width: "600px", height: "400px", backgroundColor: "grey", margin: "0 auto" }}>
