@@ -1,15 +1,5 @@
 import React from "react";
 import "react-bulma-components/dist/react-bulma-components.min.css";
-import { Button } from 'react-bulma-components/dist';
-
-
-function showForm() {
-    document.getElementById('registryform').classList.toggle('is-hidden');
-}
-
-function RegBtn() {
-    return(<Button className="is-info column is-1 is-offset-one-quarter" onClick={showForm}>REGISTER</Button>)
-}
 
 function RegistryForm(params) {
   return (<div id="registryform" className="box column is-three-fifths is-offset-one-fifth is-hidden">
@@ -102,4 +92,3 @@ function RegistryForm(params) {
 }
 
 export default RegistryForm;
-export {RegBtn};
