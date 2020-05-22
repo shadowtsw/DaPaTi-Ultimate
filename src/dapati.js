@@ -71,7 +71,7 @@ class Dapati extends React.Component {
     }
     userLogin=(userInformation)=>{
         API.userLogin(this.state.serverUrl,userInformation)
-        .then((res)=>{this.setState({serverResponse: res}); console.log(res)})
+        .then((res)=>{this.setState({token: res.token})})
         .catch((err)=>{return err})
     }
 
@@ -82,6 +82,7 @@ class Dapati extends React.Component {
         <>
             <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
             <button onClick={()=>{this.getData(this.state.endpoints.getAd)}}>TEST</button>
+            <button onClick={()=>{this.userLogin({email:"", password:""})}}>Login</button>
             <SearchArea />
             <LoginForm />
             <RegistryForm />
