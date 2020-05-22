@@ -26,8 +26,21 @@ class Dapati extends React.Component {
                 data: {},
                 token: null,
                 implementMethod: "GET"
-            }
+            },
+            formValues: {}
         }
+    }
+
+    handleFormChange = (eve) => {
+
+        let name = eve.target.name;
+        let value = eve.target.value; 
+
+       this.setState({
+           formValues: {
+               [name]: value
+           }
+       })
     }
     
     componentDidMount() {
@@ -85,7 +98,7 @@ class Dapati extends React.Component {
             <button onClick={()=>{this.userLogin({email:"", password:""})}}>Login</button>
             <SearchArea />
             <LoginForm />
-            <RegistryForm />
+            <RegistryForm  handleChange={this.handleFormChange} />
             <DisplayBox ads={this.state.serverResponse}/>
             <button onClick={this.getData}>Get Data</button>
         </>
