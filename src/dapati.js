@@ -5,7 +5,7 @@ import SearchArea from './components/search-area';
 import RegistryForm from './components/registry-form';
 import DisplayBox from './components/displaybox';
 import LoginForm from './components/login-form';
-import apiAccess from './API/fetch_methods'
+import API from './API/fetch_methods'
 
 
 class Dapati extends React.Component {
@@ -15,12 +15,13 @@ class Dapati extends React.Component {
             loggedIn: localStorage.getItem('loggedIn'),
             logButtonToggle: "",
             regButtonToggle: "",
-            token: null,
+            token: localStorage.getItem('token'),
             serverUrl: "https://awacademy-kleinanzeigen.azurewebsites.net/",
             endpoints: {
                 getAd: "ad/"
             },
-            serverResponse: null,
+            serverResponseGet: null,
+            serverResponsePost: null,
             apiAccessParam: {
                 data: {},
                 token: null,
@@ -30,7 +31,7 @@ class Dapati extends React.Component {
     }
 
     componentDidMount() {
-        if (this.state.loggedIn === "true") {
+        if (this.state.loggedIn === "true" && (this.state.token !== ""||this.state.token !== undefined||this.state.token !== null) ) {
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
             console.log('eingeloggt')
@@ -44,11 +45,13 @@ class Dapati extends React.Component {
     rembemberLogin(eve) {
         if (this.state.loggedIn === "true") {
             localStorage.removeItem("loggedIn")
+            localStorage.removeItem("token",this.state.token)
             this.setState({ loggedIn: "false" })
             this.setState({ logButtonToggle: "Login" })
             this.setState({ regButtonToggle: "Register" })
         } else {
             localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("token",this.state.token)
             this.setState({ loggedIn: "true" });
             this.setState({ logButtonToggle: "Logout" })
             this.setState({ regButtonToggle: "Un-Register" })
@@ -56,10 +59,19 @@ class Dapati extends React.Component {
         }
     }
 
-    getData=()=>{
-        // Params for Fetch --> || url = "",endpoint="",implementMethod = "",data = {}, token = "" ||
-        apiAccess(this.state.serverUrl,this.state.endpoints.getAd,"GET") //,this.state.apiAccessParam.data,this.state.apiAccessParam.token,this.state.apiAccessParam.implementMethod
-        .then((res)=>{this.setState({serverResponse: res})})
+    getData=(endpoint,token="")=>{
+        API.apiAccessGet(this.state.serverUrl,endpoint,"GET",token)
+        .then((res)=>{this.setState({serverResponseGet: res}); console.log(res)})
+        .catch((err)=>{return err})
+    }
+    postData=(endpoint,token,body={})=>{
+        API.apiAccessPost(this.state.serverUrl,endpoint,"POST",token,body)
+        .then((res)=>{this.setState({serverResponsePost: res}); console.log(res)})
+        .catch((err)=>{return err})
+    }
+    userLogin=(userInformation)=>{
+        API.userLogin(this.state.serverUrl,userInformation)
+        .then((res)=>{this.setState({serverResponse: res}); console.log(res)})
         .catch((err)=>{return err})
     }
 
@@ -67,6 +79,7 @@ class Dapati extends React.Component {
         return (
         <>
             <Header logButtonToggle={this.state.logButtonToggle} regButtonToggle={this.state.regButtonToggle}/>
+            <button onClick={()=>{this.getData(this.state.endpoints.getAd)}}>TEST</button>
             <SearchArea />
             <LoginForm />
             <RegistryForm />
