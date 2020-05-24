@@ -17,11 +17,6 @@ export async function userLogin(url = "", data={}) {
     return response.json();
 }
 export async function apiAccessGet(url = "", endpoint = "", implementMethod = "", token = "") {
-    // url = "";
-    // data = {};
-    // token = "";
-    // implementMethod = ""
-    // endpoint = "";
 
     url += endpoint;
 
@@ -59,11 +54,6 @@ export async function apiAccessGet(url = "", endpoint = "", implementMethod = ""
 }
 
 export async function apiAccessPost(url = "", endpoint = "", implementMethod = "", token = "", data = {}) {
-    // url = "";
-    // data = {};
-    // token = "";
-    // implementMethod = ""
-    // endpoint = "";
 
     url += endpoint;
 
@@ -83,7 +73,7 @@ export async function apiAccessPost(url = "", endpoint = "", implementMethod = "
             method: implementMethod,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer${token}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(data)
         });
@@ -93,11 +83,6 @@ export async function apiAccessPost(url = "", endpoint = "", implementMethod = "
 }
 
 export async function apiAccessPatch(url = "", endpoint = "", implementMethod = "", token = "", data = {}) {
-    // url = "";
-    // data = {};
-    // token = "";
-    // implementMethod = ""
-    // endpoint = "";
 
     url += endpoint;
 
@@ -117,7 +102,7 @@ export async function apiAccessPatch(url = "", endpoint = "", implementMethod = 
             method: implementMethod,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer${token}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(data)
         });
@@ -127,11 +112,6 @@ export async function apiAccessPatch(url = "", endpoint = "", implementMethod = 
 }
 
 export async function apiAccessDelete(url = "", endpoint = "", implementMethod = "", token = "") {
-    // url = "";
-    // data = {};
-    // token = "";
-    // implementMethod = ""
-    // endpoint = "";
 
     url += endpoint;
 
@@ -150,7 +130,7 @@ export async function apiAccessDelete(url = "", endpoint = "", implementMethod =
             method: implementMethod,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer${token}`
+                'Authorization': `Bearer ${token}`
             },
         });
     }
