@@ -148,6 +148,7 @@ class Dapati extends React.Component {
                 console.log('else ohne token', res)
             });
         }
+        alert(`Your ad "${adData.title}" has been successfully posted!`)
     }
     render() {
         let maincontent;
@@ -319,24 +320,21 @@ class UserPage extends React.Component {
 
         return (
             <>
-                <nav>
-                    <ul style={{ display: "flex", justifyContent: "space-around" }}>
-                        <li >
-                            <button onClick={(eve) => { this.changeTab(eve) }}>Übersicht</button>
+                <nav className="navbar has-text-centered">
+                <ul className="is-flex-desktop-only">
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>Übersicht
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
-                            <button onClick={(eve) => { this.changeTab(eve) }}>Anzeige aufgeben</button>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>Anzeige aufgeben
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
-                            <button onClick={(eve) => { this.changeTab(eve) }}>Eigene Anzeigen</button>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>Eigene Anzeigen
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Gespeicherte Anzeigen
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Message Center
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Account-Info
                         </li>
                     </ul>
@@ -471,15 +469,15 @@ class GuestPage extends React.Component {
 
         return (
             <>
-                <nav>
-                    <ul style={{ display: "flex", justifyContent: "space-around" }}>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                <nav className="navbar has-text-centered is-light">
+                    <ul className="is-flex-desktop-only">
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Übersicht
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Anzeige aufgeben
                         </li>
-                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Registrieren
                         </li>
                     </ul>
@@ -579,7 +577,8 @@ function RegistryFail() {
     return (
         <>
             <h3>Fehlgeschlagen</h3>
-            <p>Bitte überprüfe deine Daten und versuche e erneut</p>
+            <p>Passwort muss mindestens 6 Seichen haben</p>
+            <p>Bitte überprüfe deine Daten und versuche es erneut</p>
         </>
     )
 }
@@ -587,11 +586,20 @@ function RegistryFail() {
 function LoginBar(props) {
     return (
         <>
-            <form onSubmit={props.userLogin}>
-                <input type="email" id="name" name="email" placeholder="Email" />
-                <input type="password" id="password" name="password" placeholder="Passwort" />
-                <label htmlFor="rememberLogin">Remember Login<input type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /></label>
-                <button type="submit">Login</button>
+            <form className="section" onSubmit={props.userLogin}>
+                <div className="field has-addons has-addons-centered is-three-fifths is-offset-one-fifth">
+                    <div className="columns is-mobile">
+                    <div className="column">
+                    <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
+                    <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
+                    </div>
+                    <div className="column">
+                    <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Remember Login
+                    </label>
+                    <button className="button is-link is-small" type="submit">Login</button>
+                    </div>
+                    </div>
+                </div>
             </form>
         </>
     );
@@ -599,7 +607,7 @@ function LoginBar(props) {
 
 function LogoutBar(props) {
     return (
-        <button onClick={props.logout}>Logout</button>
+        <button className="button is-fullwidth is-link is-small" onClick={props.logout}>Logout</button>
     )
 }
 function Header(props) {
@@ -618,7 +626,7 @@ function Header(props) {
 function DisplayBox(props) {
     return (
 
-        <section className="section">
+        <section className="section has-background-light">
             <div className="hero-body">
                 {props.ads && props.ads.map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
             </div>
@@ -638,6 +646,10 @@ function Ad(props) {
 }
 
 function PostAdForm(props) {
+    let username = props.name;
+    if (props.name==='Gast') {
+        username = "";
+    }
     return (
         <form id="postadform" onSubmit={props.submitHandler}>
             <div className="box column is-three-fifths is-offset-one-fifth">
@@ -645,28 +657,28 @@ function PostAdForm(props) {
                 <div className="field">
                     <label className="label">Title</label>
                     <div className="control">
-                        <input className="input" type="text" name="title" placeholder="Text input" />
+                        <input className="input" type="text" name="title" placeholder="Awesome Product For Sale!" />
                     </div>
                 </div>
 
                 <div className="field">
                     <label className="label">Name</label>
                     <div className="control">
-                        <input className="input" type="text" name="name" defaultValue={props.name} />
+                        <input className="input" type="text" name="name" defaultValue={username}placeholder={props.name} />
                     </div>
                 </div>
 
                 <div className="field">
                     <label className="label">Location</label>
                     <div className="control">
-                        <input className="input" type="text" name="location" defaultValue="Hamburg" />
+                        <input className="input" type="text" name="location" placeholder="Hamburg" />
                     </div>
                 </div>
 
                 <div className="field">
                     <label className="label">Email</label>
                     <div className="control">
-                        <input className="input regemail" type="email" name="email" defaultValue={props.email} />
+                        <input className="input regemail" type="email" name="email" placeholder="my@email.com" defaultValue={props.email} />
                     </div>
                     <p className="help emailalert"></p>
                 </div>
@@ -681,19 +693,17 @@ function PostAdForm(props) {
                 <div className="field">
                     <label className="label">Price</label>
                     <div className="control">
-                        <input className="input" type="number" name="price" placeholder="00.00 €" />
+                        <input className="input" type="number" name="price" placeholder="00.00 €" min="0" />
                     </div>
                 </div>
 
                 <div className="field">
                     <div className="control">
                         <label htmlFor="negoYes" className="radio">
-                            <input type="radio" id="negoYes" name="priceNegotiable" value="true" />
-                    Negotiable
+                            <input type="radio" id="negoYes" name="priceNegotiable" /> Negotiable
                     </label>
                         <label htmlFor="negoNo" className="radio">
-                            <input type="radio" id="negoNo" name="priceNegotiable" value="false" />
-                    Fixed Price
+                            <input type="radio" id="negoNo" name="priceNegotiable" /> Fixed Price
                     </label>
                     </div>
                 </div>
@@ -718,7 +728,7 @@ function RegistryForm(props) {
 
                 <div className="field">
                     <label className="label">Username</label>
-                    <div className="control has-icons-left has-icons-right">
+                    <div className="control">
                         <input className="input" type="text" placeholder="Text input" />
                     </div>
                     <p className="help usernamealert"></p>
@@ -726,7 +736,7 @@ function RegistryForm(props) {
 
                 <div className="field">
                     <label className="label">Email</label>
-                    <div className="control has-icons-left has-icons-right">
+                    <div className="control">
                         <input className="input regemail" type="email" placeholder="Email input" />
                     </div>
                     <p className="help emailalert"></p>
@@ -734,7 +744,7 @@ function RegistryForm(props) {
 
                 <div className="field">
                     <label className="label">Passwort</label>
-                    <div className="control has-icons-left has-icons-right">
+                    <div className="control">
                         <input className="input" type="password" placeholder="Passwort" />
                     </div>
                     <p className="help usernamealert"></p>
