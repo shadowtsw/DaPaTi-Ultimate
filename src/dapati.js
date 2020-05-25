@@ -322,20 +322,20 @@ class UserPage extends React.Component {
             <>  <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
                 <div className="tabs is-medium is-boxed is-centered">
                     <ul>
-                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
+                        <li className={this.state.activeTab === "Übersicht" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Übersicht</a>
                         </li>
-                        <li className={this.state.activeTab === "Anzeige aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
+                        <li className={this.state.activeTab === "Anzeige aufgeben" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Anzeige aufgeben</a>
                         </li>
-                        <li className={this.state.activeTab === "Eigene Anzeigen" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Eigene Anzeigen</a>
+                        <li className={this.state.activeTab === "Eigene Anzeigen" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Eigene Anzeigen</a>
                         </li>
-                        <li className={this.state.activeTab === "Gespeicherte Anzeigen" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}>
-                            <a>Gespeicherte Anzeigen</a>
+                        <li className={this.state.activeTab === "Gespeicherte Anzeigen" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
+                            <a href="#!">Gespeicherte Anzeigen</a>
                         </li>
-                        <li className={this.state.activeTab === "Message Center" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}>
-                            <a>Message Center</a>
+                        <li className={this.state.activeTab === "Message Center" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
+                            <a href="#!">Message Center</a>
                         </li>
-                        <li className={this.state.activeTab === "Account-Info" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}>
-                            <a>Account-Info</a>
+                        <li className={this.state.activeTab === "Account-Info" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
+                            <a href="#!">Account-Info</a>
                         </li>
                     </ul>
                 </div>
@@ -472,11 +472,11 @@ class GuestPage extends React.Component {
 
                 <div className="tabs is-medium is-boxed is-centered">
                     <ul>
-                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
+                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href='#!'>Übersicht</a>
                         </li>
-                        <li className={this.state.activeTab === "Anzeige aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
+                        <li className={this.state.activeTab === "Anzeige aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href='#!'>Anzeige aufgeben</a>
                         </li>
-                        <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Registrieren</a>
+                        <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href='#!'>Registrieren</a>
                         </li>
                     </ul>
                 </div>
