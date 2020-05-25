@@ -8,8 +8,14 @@ import React from 'react';
 // import API from './API/fetch_methods';
 import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
+import { useState } from 'react';
+import {userLogin,apiAccessGet,apiAccessPost,apiAccessPatch,apiAccessDelete} from './API/fetch_methods'
 // var Perf = require('react-addons-perf'); // ES5 with npm
 
+
+// * Regular methods implemented by responsible class
+
+//? Used by UserPage and GuestPage
 function changeTab(eve) {
     console.log(eve.target.textContent)
     this.setState({
@@ -18,7 +24,7 @@ function changeTab(eve) {
     if (eve.target.textContent === "Übersicht") {
     }
 }
-
+//? Used by UserPage and GuestPage
 function searchFunction(eve) {
     eve.preventDefault();
     console.log(eve.target)
@@ -55,34 +61,36 @@ function searchFunction(eve) {
             console.log('err', err)
         })
 }
-
+//? Used by UserPage and GuestPage
 function updateRoutineBasic() {
     const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
 
     this.props.getData("ad?filter=" + filterParam, this.props.token)
         .then((res) => {
-
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
             })
             this.setState({ sortedAd: sortedAds })
-            this.setState({ ubersicht: res })
         })
 }
-
+//? Used by UserPage only
 function updateRoutineUser() {
 
     this.props.getData("user/me/saved-ad", this.props.token)
         .then((res) => {
-            this.setState({ savedAds: res })
+            let sortedAds = new Map();
+            res.forEach((article) => {
+                sortedAds.set(article.id, article)
+            })
+            this.setState({ savedAds: sortedAds })
         })
     this.props.getData("user/me/conversations", this.props.token)
         .then((res) => {
             this.setState({ messageCenter: res })
         })
 }
-
+//? Used by UserPage only
 function getAccountInfo() {
     this.props.getData("user/me", this.props.token).then((res) => {
         this.setState({
@@ -91,6 +99,7 @@ function getAccountInfo() {
     })
 }
 
+// * End
 
 
 
@@ -287,7 +296,6 @@ class UserPage extends React.Component {
         this.getAccountInfo = getAccountInfo.bind(this);
         this.state = {
             activeTab: "Übersicht",
-            ubersicht: null,
             savedAds: null,
             searchedAds: null,
             messageCenter: null,
@@ -328,17 +336,24 @@ class UserPage extends React.Component {
     
     render() {
         let maincontent;
+        let sucheErgebnis;
         let content = new Map([
-            ["Übersicht", <DisplayBox ads={this.state.ubersicht} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
-            ["Suche Ergebnis", <DisplaySearchBox ads={this.state.searchedAds} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3></div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><SavedAdsView ads={this.state.savedAds} /></div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen"/></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
         maincontent = content.get(this.state.activeTab)
+
+        if(this.state.searchedAds) {
+            sucheErgebnis =
+            <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
+            </li>
+        }
 
         return (
             <>  <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
@@ -346,8 +361,7 @@ class UserPage extends React.Component {
                     <ul>
                         <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
                         </li>
-                        <li className={this.state.activeTab === "Suche Ergebnis" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis</a>
-                        </li>
+                        {sucheErgebnis}
                         <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
                         </li>
                         <li className={this.state.activeTab === "Eigene Anzeigen" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Eigene Anzeigen</a>
@@ -379,7 +393,6 @@ class GuestPage extends React.Component {
         this.updateRoutineBasic = updateRoutineBasic.bind(this);
         this.state = {
             activeTab: "Übersicht",
-            ubersicht: null,
             sortedAd: null,
             singleAd: null,
             searchedAds: null
@@ -435,9 +448,10 @@ class GuestPage extends React.Component {
 
     render() {
         let maincontent;
+        let sucheErgebnis;
         let content = new Map([
-            ['Übersicht', <DisplayBox ads={this.state.ubersicht} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
-            ["Suche Ergebnis", <DisplaySearchBox ads={this.state.searchedAds} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ['Übersicht', <DisplayBox ads={this.state.sortedAd} origin="Übersicht" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
             ['Anzeige Aufgeben', <PostAdForm name={"Gast"} submitHandler={this.props.submitHandler} />],
             ['Registrieren', <RegistryForm onSubmit={(eve) => { this.register(eve) }} />],
             ['Registrieren Erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
@@ -447,6 +461,12 @@ class GuestPage extends React.Component {
 
         maincontent = content.get(this.state.activeTab);
 
+        if(this.state.searchedAds) {
+            sucheErgebnis =
+        <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
+            </li>
+        }
+
         return (
             <>
                 <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
@@ -455,8 +475,7 @@ class GuestPage extends React.Component {
                     <ul>
                         <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
                         </li>
-                        <li className={this.state.activeTab === "Suche Ergebnis" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis</a>
-                        </li>
+                        {sucheErgebnis}
                         <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige Aufgeben</a>
                         </li>
                         <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Registrieren</a>
@@ -490,31 +509,8 @@ function SearchBar(props) {
 // ----- Components and Functions need to sort
 
 
-function SavedAdsView(props) {
-    return (
-        <section className="section">
-            <div className="hero-body">
-                {props.ads && props.ads.map(ad => <SavedAd ad={ad} />)}
-            </div>
-        </section>
-    )
-}
 
-function SavedAd(props) {
-    return (
-        <article className="box container has-text-centered">
-            <h2 className="title is-size-3"> {props.ad.title}</h2>
-            <p className="subtitle is-size-7"> {new Date(props.ad.createdAt).toLocaleDateString()}</p>
-            <div className="content">
-                <p className="title is-size-5">Beschreibung</p><p>{props.ad.description}</p>
-                <p><b>Email:</b> {props.ad.email}</p>
-                <p><b>Ort:</b> {props.ad.location}</p>
-                <p><b>Ansprechpartner:</b> {props.ad.name}</p>
-                <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
-            </div>
-        </article>
-    )
-}
+
 
 function SingleAd(props) {
     let button;
@@ -616,28 +612,41 @@ function Header(props) {
     );
 }
 
+
+// ! Component block sticks together
 function DisplayBox(props) {
-    return (
+    let title;
+    if (props.origin === "Übersicht") {
+        title = "DaPaTi Anzeigen";
+        return (
 
-        <section className="section has-background-light">
-            <h1 className="title has-text-centered">DaPaTi Anzeigen</h1>
-            <div className="hero-body">
-                {props.ads && props.ads.map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
-            </div>
-        </section>
-    )
-}
+            <section className="section has-background-light">
+                <h1 className="title has-text-centered">{title}</h1>
+                <div className="hero-body">
+                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
+                </div>
+            </section>
+        )
+    } else if (props.origin === "Suche Ergebnis") {
+        title = "Gesuchte Anzeigen";
+        return (
 
-function DisplaySearchBox(props) {
-    return (
-
-        <section className="section has-background-light">
-            <h1 className="title has-text-centered">Gesuchte Anzeigen</h1>
-            <div className="hero-body">
-                {props.ads && props.ads.map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
-            </div>
-        </section>
-    )
+            <section className="section has-background-light">
+                <h1 className="title has-text-centered">{title}</h1>
+                <div className="hero-body">
+                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
+                </div>
+            </section>
+        )
+    } else if (props.origin === "Gespeicherte Anzeigen") {
+        return (
+            <section className="section">
+                <div className="hero-body">
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} />)}
+                </div>
+            </section>
+        )
+    }
 }
 
 function Ad(props) {
@@ -650,6 +659,24 @@ function Ad(props) {
         </article>
     )
 }
+
+function SavedAd(props) {
+    return (
+        <article className="box container has-text-centered">
+            <h2 className="title is-size-3"> {props.ad.title}</h2>
+            <p className="subtitle is-size-7"> {new Date(props.ad.createdAt).toLocaleDateString()}</p>
+            <div className="content">
+                <p className="title is-size-5">Beschreibung</p><p>{props.ad.description}</p>
+                <p><b>Email:</b> {props.ad.email}</p>
+                <p><b>Ort:</b> {props.ad.location}</p>
+                <p><b>Ansprechpartner:</b> {props.ad.name}</p>
+                <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+            </div>
+        </article>
+    )
+}
+// ! Component block sticks together END
+
 
 function PostAdForm(props) {
     let username = props.name;
@@ -772,144 +799,6 @@ function RegistryForm(props) {
             </div>
         </form>
     );
-}
-
-export async function userLogin(url = "", data = {}) {
-
-    const endpoint = "/user/login"
-    url += endpoint;
-
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-
-
-    return response.json();
-}
-export async function apiAccessGet(url = "", endpoint = "", implementMethod = "", token = "") {
-
-    url += endpoint;
-
-    let response;
-
-    if (implementMethod === "GET" && token === "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            // body: data
-        });
-    }
-    else if (implementMethod === "GET" && token !== "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            // body: data
-        });
-    }
-    // else if (implementMethod === "GET" && token !== ""){
-
-    // }
-
-
-    // if (data !== {}) {
-    //     data = JSON.stringify(data)
-    // }
-
-    return response.json();
-}
-
-export async function apiAccessPost(url = "", endpoint = "", implementMethod = "", token = "", data = {}) {
-
-    url += endpoint;
-
-    let response;
-
-    if (implementMethod === "POST" && token === "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-    }
-    else if (implementMethod === "POST" && token !== "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        });
-    }
-
-    return response.json();
-}
-
-export async function apiAccessPatch(url = "", endpoint = "", implementMethod = "", token = "", data = {}) {
-
-    url += endpoint;
-
-    let response;
-
-    if (implementMethod === "PATCH" && token === "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-    }
-    else if (implementMethod === "PATCH" && token !== "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        });
-    }
-
-    return response.json();
-}
-
-export async function apiAccessDelete(url = "", endpoint = "", implementMethod = "", token = "") {
-
-    url += endpoint;
-
-    let response;
-
-    if (implementMethod === "DELETE" && token === "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-    }
-    else if (implementMethod === "DELETE" && token !== "") {
-        response = await fetch(url, {
-            method: implementMethod,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        });
-    }
-
-    return response.json();
 }
 
 export default Dapati
