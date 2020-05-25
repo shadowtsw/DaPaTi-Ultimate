@@ -8,7 +8,7 @@ import React from 'react';
 // import API from './API/fetch_methods';
 import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
-// var Perf = require('react-addons-perf'); // ES5 with npm
+
 
 class Dapati extends React.Component {
     constructor(props) {
@@ -31,12 +31,6 @@ class Dapati extends React.Component {
         if (localStorage.getItem('token')) {
             this.setState({ tokenAvailable: true })
         }
-        // Perf.start()
-    }
-    componentDidUpdate() {
-        // Perf.stop()
-        // Perf.printInclusive()
-        // Perf.printWasted()
     }
     getData = (endpoint, token = "") => {
         return apiAccessGet(this.state.serverUrl, endpoint, "GET", token)
@@ -220,8 +214,7 @@ class UserPage extends React.Component {
     componentDidUpdate() {
     }
     updateRoutine() {
-        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
-        this.props.getData("ad?filter=" + filterParam, this.props.token)
+        this.props.getData("ad", this.props.token)
             .then((res) => {
 
                 let sortedAds = new Map();
@@ -268,42 +261,6 @@ class UserPage extends React.Component {
             })
         this.updateRoutine()
     }
-    searchFunction(eve) {
-        eve.preventDefault();
-        console.log(eve.target)
-    
-        let suchbegriffOrt;
-        let suchbegriffTitel;
-        let suchbegriffBegriff;
-    
-        eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
-        eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
-        eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-    
-        const filter =
-        {
-            limit: 20,
-            offset: 0,
-            where: {
-                and: [
-                    { location: { like: suchbegriffOrt, options: "i" } },
-                    { title: { like: suchbegriffTitel, options: "i" } },
-                    { description: { like: suchbegriffBegriff, options: "i" } }
-                ]
-            }
-        };
-    
-        const filterParam = encodeURIComponent(JSON.stringify(filter));
-    
-        this.props.getData(`ad/?filter=${filterParam}`)
-            .then((res) => {
-                console.log(res)
-                this.setState({ searchedAds: res })
-            })
-            .catch((err) => {
-                console.log('err', err)
-            })
-    }
     render() {
         let maincontent;
         let content = new Map([
@@ -341,7 +298,6 @@ class UserPage extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <SearchBar searchFunction={(eve)=>{this.searchFunction(eve)}}/>
                 <main>
                     {maincontent}
                 </main>
@@ -361,8 +317,7 @@ class GuestPage extends React.Component {
         }
     }
     componentDidMount() {
-        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
-        this.props.getData("ad?filter=" + filterParam).then((res) => {
+        this.props.getData("ad").then((res) => {
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
@@ -420,42 +375,13 @@ class GuestPage extends React.Component {
             activeTab: "Einzelartikel"
         })
     }
+    // ! added addionally
     searchFunction(eve) {
         eve.preventDefault();
         console.log(eve.target)
-    
-        let suchbegriffOrt;
-        let suchbegriffTitel;
-        let suchbegriffBegriff;
-    
-        eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
-        eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
-        eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-    
-        const filter =
-        {
-            limit: 20,
-            offset: 0,
-            where: {
-                and: [
-                    { location: { like: suchbegriffOrt, options: "i" } },
-                    { title: { like: suchbegriffTitel, options: "i" } },
-                    { description: { like: suchbegriffBegriff, options: "i" } }
-                ]
-            }
-        };
-    
-        const filterParam = encodeURIComponent(JSON.stringify(filter));
-    
-        this.props.getData(`ad/?filter=${filterParam}`)
-            .then((res) => {
-                console.log(res)
-                this.setState({ searchedAds: res })
-            })
-            .catch((err) => {
-                console.log('err', err)
-            })
     }
+    // ! added addionally
+
     render() {
         let maincontent;
         let content = new Map([
@@ -466,7 +392,6 @@ class GuestPage extends React.Component {
             ['Registrieren fehlgeschlagen', <RegistryFail />],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
-
         maincontent = content.get(this.state.activeTab);
 
         return (
@@ -484,7 +409,15 @@ class GuestPage extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <SearchBar searchFunction={(eve)=>this.searchFunction(eve)}/>
+
+                {/* // ! added addionally */}
+                    <form onSubmit={(eve)=>{this.searchFunction(eve)}}>
+                        <input type="text" id="input1"/>
+                        <input type="text" id="input2"/>
+                        <button type="submit">Suche</button>
+                    </form>
+                {/* // ! added addionally */}
+
                 <main>
                     {maincontent}
                 </main>
@@ -493,18 +426,6 @@ class GuestPage extends React.Component {
     }
 }
 
-function SearchBar(props) {
-    return (
-        <>
-            <form onSubmit={(eve) => { props.searchFunction(eve) }}>
-                <input type="text" id="searchLocation" placeholder="Ort" />
-                <input type="text" id="searchTitle" placeholder="Titel" />
-                <input type="text" id="searchDescription" placeholder="Beschreibung" />
-                <button type="submit">Suche </button>
-            </form>
-        </>
-    )
-}
 
 
 // ----- Components and Functions need to sort
@@ -540,24 +461,23 @@ function SavedAd(props) {
 function SingleAd(props) {
     let button;
     if (props.token) {
-        button = <button className="button is-success" onClick={props.saveAd}>Anzeige speichern</button>
+        button = <button onClick={props.saveAd}>Anzeige speichern</button>
     } else {
         button = null;
     }
     return (
-        <article className="box container has-text-centered">
-            <h2 className="title is-size-3"> {props.singleAd.title}</h2>
-            <p className="subtitle is-size-7"> {new Date(props.singleAd.createdAt).toLocaleDateString()}</p>
-            <div className="content">
-                <p className="title is-size-5">Beschreibung</p><p>{props.singleAd.description}</p>
+        <>
+            <h2><b>Title:</b> {props.singleAd.title}</h2>
+            <p><b>erstellt:</b> {props.singleAd.createdAt}</p>
+            <p><b>Beschreibung:</b> {props.singleAd.description}</p>
             <p><b>Email:</b> {props.singleAd.email}</p>
+            <p><b>ID:</b> {props.singleAd.id}</p>
             <p><b>Ort:</b> {props.singleAd.location}</p>
             <p><b>Ansprechpartner:</b> {props.singleAd.name}</p>
-                <p><b>Preis:</b> {props.singleAd.price} € {props.singleAd.priceNegotiable && <span class="tag is-info">VB</span>}</p>
-            </div>
-            {/* <p><b>Verhandelbar:</b> {props.singleAd.priceNegotiable}</p> */}
+            <p><b>Preis:</b> {props.singleAd.price}</p>
+            <p><b>Verhandelbar:</b> {props.singleAd.priceNegotiable}</p>
             {button}
-        </article>
+        </>
     )
 }
 
@@ -631,8 +551,8 @@ function Ad(props) {
     return (
         <article className="box">
             <h3 className="title">{props.ad.title}</h3>
-            <p className="content">{props.ad.description}</p>
-            <button className="button is-info" onClick={() => { props.chooseSingleAd(props.ad.id) }}>Details</button>
+            <button onClick={() => { props.chooseSingleAd(props.ad.id) }}>Anzeigen-ID: {props.ad.id} (zeige Details)</button>
+            <p>{props.ad.description}</p>
         </article>
     )
 }
