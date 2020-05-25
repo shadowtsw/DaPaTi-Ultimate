@@ -272,15 +272,15 @@ class UserPage extends React.Component {
     searchFunction(eve) {
         eve.preventDefault();
         console.log(eve.target)
-    
+
         let suchbegriffOrt;
         let suchbegriffTitel;
         let suchbegriffBegriff;
-    
+
         eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
         eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
         eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-    
+
         const filter =
         {
             limit: 20,
@@ -293,9 +293,9 @@ class UserPage extends React.Component {
                 ]
             }
         };
-    
+
         const filterParam = encodeURIComponent(JSON.stringify(filter));
-    
+
         this.props.getData(`ad/?filter=${filterParam}`)
             .then((res) => {
                 console.log(res)
@@ -320,26 +320,26 @@ class UserPage extends React.Component {
 
         return (
             <>
-                <nav className="navbar has-text-centered">
-                <ul className="is-flex-desktop-only">
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>Übersicht
+                <div className="tabs is-medium is-boxed is-centered">
+                    <ul>
+                        <li className="is-active" onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>Anzeige aufgeben
+                        <li onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>Eigene Anzeigen
+                        <li onClick={(eve) => { this.changeTab(eve) }}><a>Eigene Anzeigen</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
-                            Gespeicherte Anzeigen
+                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                            <a>Gespeicherte Anzeigen</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
-                            Message Center
+                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                            <a>Message Center</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
-                            Account-Info
+                        <li onClick={(eve) => { this.changeTab(eve) }}>
+                            <a>Account-Info</a>
                         </li>
                     </ul>
-                </nav>
-                <SearchBar searchFunction={(eve)=>{this.searchFunction(eve)}}/>
+                </div>
+                <SearchBar searchFunction={(eve) => { this.searchFunction(eve) }} />
                 <main>
                     {maincontent}
                 </main>
@@ -421,15 +421,15 @@ class GuestPage extends React.Component {
     searchFunction(eve) {
         eve.preventDefault();
         console.log(eve.target)
-    
+
         let suchbegriffOrt;
         let suchbegriffTitel;
         let suchbegriffBegriff;
-    
+
         eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
         eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
         eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-    
+
         const filter =
         {
             limit: 20,
@@ -442,9 +442,9 @@ class GuestPage extends React.Component {
                 ]
             }
         };
-    
+
         const filterParam = encodeURIComponent(JSON.stringify(filter));
-    
+
         this.props.getData(`ad/?filter=${filterParam}`)
             .then((res) => {
                 console.log(res)
@@ -482,7 +482,7 @@ class GuestPage extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <SearchBar searchFunction={(eve)=>this.searchFunction(eve)}/>
+                <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
                 <main>
                     {maincontent}
                 </main>
@@ -511,26 +511,23 @@ function SearchBar(props) {
 function SavedAdsView(props) {
     return (
         <section className="section">
-            <div className="hero-body">
-                {props.ads && props.ads.map(ad => <SavedAd ad={ad} />)};
-            </div>
+            {props.ads && props.ads.map(ad => <SavedAd ad={ad} />)}
         </section>
     )
 }
 
 function SavedAd(props) {
     return (
-        <article className="box">
-            <h3 className="title" >{props.ad.title}</h3>
-            <p><b>erstellt:</b> {props.ad.createdAt}</p>
-            <p><b>Email:</b> {props.ad.email}</p>
-            <p><b>ID:</b> {props.ad.id}</p>
-            <p><b>Ort:</b> {props.ad.location}</p>
-            <p><b>Ansprechpartner:</b> {props.ad.name}</p>
-            <p><b>Preis:</b> {props.ad.price}</p>
-            <p><b>Verhandelbar:</b> {props.ad.priceNegotiable}</p>
-            <br />
-            <p>{props.ad.description}</p>
+        <article className="box container has-text-centered">
+            <h2 className="title is-size-3"> {props.ad.title}</h2>
+            <p className="subtitle is-size-7"> {new Date(props.ad.createdAt).toLocaleDateString()}</p>
+            <div className="content">
+                <p className="title is-size-5">Beschreibung</p><p>{props.ad.description}</p>
+                <p><b>Email:</b> {props.ad.email}</p>
+                <p><b>Ort:</b> {props.ad.location}</p>
+                <p><b>Ansprechpartner:</b> {props.ad.name}</p>
+                <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+            </div>
         </article>
     )
 }
@@ -542,20 +539,32 @@ function SingleAd(props) {
     } else {
         button = null;
     }
+
+    function daysOld(date) {
+        const day = 1000 * 60 * 60 * 24;
+        const oldDate = new Date(date).getTime();
+        const newDate = new Date().getTime();
+
+        return Math.ceil((newDate-oldDate)/day)
+    }
+
+    const days = daysOld(props.singleAd.createdAt);
+
     return (
-        <article className="box container has-text-centered">
-            <h2 className="title is-size-3"> {props.singleAd.title}</h2>
-            <p className="subtitle is-size-7"> {new Date(props.singleAd.createdAt).toLocaleDateString()}</p>
-            <div className="content">
-                <p className="title is-size-5">Beschreibung</p><p>{props.singleAd.description}</p>
-            <p><b>Email:</b> {props.singleAd.email}</p>
-            <p><b>Ort:</b> {props.singleAd.location}</p>
-            <p><b>Ansprechpartner:</b> {props.singleAd.name}</p>
-                <p><b>Preis:</b> {props.singleAd.price} € {props.singleAd.priceNegotiable && <span class="tag is-info">VB</span>}</p>
-            </div>
-            {/* <p><b>Verhandelbar:</b> {props.singleAd.priceNegotiable}</p> */}
-            {button}
-        </article>
+        <section className="section">
+            <article className="box container has-text-centered column is-three-fifths is-offset-one-fifth">
+                <h2 className="title is-size-3"> {props.singleAd.title}</h2>
+                <p className="subtitle is-size-6"> {days} {days > 1 ? 'Tage':'Tag'} alt</p>
+                <div className="content">
+                    <p className="title is-size-5">Beschreibung</p><p>{props.singleAd.description}</p>
+                    <p><b>Email:</b> {props.singleAd.email}</p>
+                    <p><b>Ort:</b> {props.singleAd.location}</p>
+                    <p><b>Ansprechpartner:</b> {props.singleAd.name}</p>
+                    <p><b>Preis:</b> {props.singleAd.price} € {props.singleAd.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+                </div>
+                {button}
+            </article>
+        </section>
     )
 }
 
@@ -589,15 +598,15 @@ function LoginBar(props) {
             <form className="section" onSubmit={props.userLogin}>
                 <div className="field has-addons has-addons-centered is-three-fifths is-offset-one-fifth">
                     <div className="columns is-mobile">
-                    <div className="column">
-                    <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
-                    <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
-                    </div>
-                    <div className="column">
-                    <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Remember Login
+                        <div className="column">
+                            <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
+                            <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
+                        </div>
+                        <div className="column">
+                            <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Remember Login
                     </label>
-                    <button className="button is-link is-small" type="submit">Login</button>
-                    </div>
+                            <button className="button is-link is-small" type="submit">Login</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -637,8 +646,8 @@ function DisplayBox(props) {
 function Ad(props) {
 
     return (
-        <article className="box">
-            <h3 className="title">{props.ad.title}</h3>
+        <article className="box column is-three-fifths is-offset-one-fifth">
+            <h3 className="title is-size-4">{props.ad.title}</h3>
             <p className="content">{props.ad.description}</p>
             <button className="button is-info" onClick={() => { props.chooseSingleAd(props.ad.id) }}>Details</button>
         </article>
@@ -647,7 +656,7 @@ function Ad(props) {
 
 function PostAdForm(props) {
     let username = props.name;
-    if (props.name==='Gast') {
+    if (props.name === 'Gast') {
         username = "";
     }
     return (
@@ -664,7 +673,7 @@ function PostAdForm(props) {
                 <div className="field">
                     <label className="label">Name</label>
                     <div className="control">
-                        <input className="input" type="text" name="name" defaultValue={username}placeholder={props.name} />
+                        <input className="input" type="text" name="name" defaultValue={username} placeholder={props.name} />
                     </div>
                 </div>
 
