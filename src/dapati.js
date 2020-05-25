@@ -10,6 +10,55 @@ import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
 // var Perf = require('react-addons-perf'); // ES5 with npm
 
+function changeTab(eve) {
+    console.log(eve.target.textContent)
+    this.setState({
+        activeTab: eve.target.textContent
+    })
+    if (eve.target.textContent === "Übersicht") {
+    }
+}
+
+function searchFunction(eve) {
+    eve.preventDefault();
+    console.log(eve.target)
+
+    let suchbegriffOrt;
+    let suchbegriffTitel;
+    let suchbegriffBegriff;
+
+    eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
+    eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
+    eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
+
+    const filter =
+    {
+        limit: 20,
+        offset: 0,
+        where: {
+            and: [
+                { location: { like: suchbegriffOrt, options: "i" } },
+                { title: { like: suchbegriffTitel, options: "i" } },
+                { description: { like: suchbegriffBegriff, options: "i" } }
+            ]
+        }
+    };
+
+    const filterParam = encodeURIComponent(JSON.stringify(filter));
+
+    this.props.getData(`ad/?filter=${filterParam}`)
+        .then((res) => {
+            console.log(res)
+            this.setState({ searchedAds: res })
+        })
+        .catch((err) => {
+            console.log('err', err)
+        })
+}
+
+
+
+
 class Dapati extends React.Component {
     constructor(props) {
         super(props);
@@ -196,6 +245,8 @@ class Dapati extends React.Component {
 class UserPage extends React.Component {
     constructor(props) {
         super(props);
+        this.changeTab = changeTab.bind(this);
+        this.searchFunction = searchFunction.bind(this);
         this.state = {
             activeTab: "Übersicht",
             ubersicht: null,
@@ -242,15 +293,7 @@ class UserPage extends React.Component {
                 this.setState({ messageCenter: res })
             })
     }
-    changeTab(eve) {
-        console.log(eve.target.textContent)
-        this.setState({
-            activeTab: eve.target.textContent
-        })
-        if (eve.target.textContent === "Übersicht") {
-            this.updateRoutine()
-        }
-    }
+
     chooseSingleAd(id) {
         console.log(id)
         this.setState({
@@ -270,42 +313,7 @@ class UserPage extends React.Component {
             })
         this.updateRoutine()
     }
-    searchFunction(eve) {
-        eve.preventDefault();
-        console.log(eve.target)
-
-        let suchbegriffOrt;
-        let suchbegriffTitel;
-        let suchbegriffBegriff;
-
-        eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
-        eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
-        eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-
-        const filter =
-        {
-            limit: 20,
-            offset: 0,
-            where: {
-                and: [
-                    { location: { like: suchbegriffOrt, options: "i" } },
-                    { title: { like: suchbegriffTitel, options: "i" } },
-                    { description: { like: suchbegriffBegriff, options: "i" } }
-                ]
-            }
-        };
-
-        const filterParam = encodeURIComponent(JSON.stringify(filter));
-
-        this.props.getData(`ad/?filter=${filterParam}`)
-            .then((res) => {
-                console.log(res)
-                this.setState({ searchedAds: res })
-            })
-            .catch((err) => {
-                console.log('err', err)
-            })
-    }
+    
     render() {
         let maincontent;
         let content = new Map([
@@ -354,6 +362,8 @@ class UserPage extends React.Component {
 class GuestPage extends React.Component {
     constructor(props) {
         super(props);
+        this.changeTab = changeTab.bind(this);
+        this.searchFunction = searchFunction.bind(this);
         this.state = {
             activeTab: "Übersicht",
             ubersicht: null,
@@ -373,12 +383,7 @@ class GuestPage extends React.Component {
             this.setState({ ubersicht: res })
         })
     };
-    changeTab(eve) {
-        console.log(eve.target.textContent)
-        this.setState({
-            activeTab: eve.target.textContent
-        })
-    }
+
     register(eve) {
         eve.preventDefault();
         console.log(eve.target)
@@ -422,42 +427,7 @@ class GuestPage extends React.Component {
             activeTab: "Einzelartikel"
         })
     }
-    searchFunction(eve) {
-        eve.preventDefault();
-        console.log(eve.target)
 
-        let suchbegriffOrt;
-        let suchbegriffTitel;
-        let suchbegriffBegriff;
-
-        eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
-        eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
-        eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-
-        const filter =
-        {
-            limit: 20,
-            offset: 0,
-            where: {
-                and: [
-                    { location: { like: suchbegriffOrt, options: "i" } },
-                    { title: { like: suchbegriffTitel, options: "i" } },
-                    { description: { like: suchbegriffBegriff, options: "i" } }
-                ]
-            }
-        };
-
-        const filterParam = encodeURIComponent(JSON.stringify(filter));
-
-        this.props.getData(`ad/?filter=${filterParam}`)
-            .then((res) => {
-                console.log(res)
-                this.setState({ searchedAds: res })
-            })
-            .catch((err) => {
-                console.log('err', err)
-            })
-    }
     render() {
         let maincontent;
         let content = new Map([
