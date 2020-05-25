@@ -9,9 +9,8 @@ import React from 'react';
 import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
 import { useState } from 'react';
-import {userLogin,apiAccessGet,apiAccessPost,apiAccessPatch,apiAccessDelete} from './API/fetch_methods'
+import { userLogin, apiAccessGet, apiAccessPost, apiAccessPatch, apiAccessDelete } from './API/fetch_methods'
 // var Perf = require('react-addons-perf'); // ES5 with npm
-
 
 // * Regular methods implemented by responsible class
 
@@ -313,8 +312,8 @@ class UserPage extends React.Component {
         this.updateRoutineUser();
         this.getAccountInfo();
     };
- 
-    chooseSingleAd(id) {
+
+    selectAd(id) {
         console.log(id)
         this.setState({
             singleAd: this.state.sortedAd.get(id)
@@ -323,36 +322,44 @@ class UserPage extends React.Component {
             activeTab: "Einzelartikel"
         })
     }
+
     saveAd() {
+        if (this.state.sortedAd.get(this.state.singleAd.id)) {
+            alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
+            this.updateRoutineUser()
+            return;
+        }
         this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, { id: this.state.singleAd.id })
             .then((res) => {
                 console.log('res saveAd', res)
+                alert("Anzeige erfolgreich gespeichert")
             })
             .catch((err) => {
                 console.log('err saveAd', err)
+                alert("Check Log for Details")
             })
-        this.updateRoutine()
+        this.updateRoutineUser()
     }
-    
+
     render() {
         let maincontent;
         let sucheErgebnis;
         let content = new Map([
-            ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
-            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
+            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id)} />],
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3></div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen"/></div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" /></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
         maincontent = content.get(this.state.activeTab)
 
-        if(this.state.searchedAds) {
+        if (this.state.searchedAds) {
             sucheErgebnis =
-            <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
-            </li>
+                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
+                </li>
         }
 
         return (
@@ -436,7 +443,7 @@ class GuestPage extends React.Component {
                 })
             })
     }
-    chooseSingleAd(id) {
+    selectAd(id) {
         console.log(id)
         this.setState({
             singleAd: this.state.sortedAd.get(id)
@@ -450,8 +457,8 @@ class GuestPage extends React.Component {
         let maincontent;
         let sucheErgebnis;
         let content = new Map([
-            ['Übersicht', <DisplayBox ads={this.state.sortedAd} origin="Übersicht" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
-            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ['Übersicht', <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
+            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id)} />],
             ['Anzeige Aufgeben', <PostAdForm name={"Gast"} submitHandler={this.props.submitHandler} />],
             ['Registrieren', <RegistryForm onSubmit={(eve) => { this.register(eve) }} />],
             ['Registrieren Erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
@@ -461,10 +468,10 @@ class GuestPage extends React.Component {
 
         maincontent = content.get(this.state.activeTab);
 
-        if(this.state.searchedAds) {
+        if (this.state.searchedAds) {
             sucheErgebnis =
-        <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
-            </li>
+                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
+                </li>
         }
 
         return (
@@ -515,7 +522,11 @@ function SearchBar(props) {
 function SingleAd(props) {
     let button;
     if (props.token) {
-        button = <button className="button is-success" onClick={props.saveAd}>Anzeige speichern</button>
+        if ((this.state.sortedAd.get(this.state.singleAd.id))) {
+            button = <button> ! Bereits Gespeichert !</button>
+        } else {
+            button = <button className="button is-success" onClick={props.saveAd}>Anzeige speichern</button>
+        }
     } else {
         button = null;
     }
@@ -623,7 +634,7 @@ function DisplayBox(props) {
             <section className="section has-background-light">
                 <h1 className="title has-text-centered">{title}</h1>
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
+                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} selectAd={(id) => { props.selectAd(id) }} />)}
                 </div>
             </section>
         )
@@ -634,7 +645,7 @@ function DisplayBox(props) {
             <section className="section has-background-light">
                 <h1 className="title has-text-centered">{title}</h1>
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
+                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} selectAd={(id) => { props.selectAd(id) }} />)}
                 </div>
             </section>
         )
@@ -655,7 +666,7 @@ function Ad(props) {
         <article className="box column is-three-fifths is-offset-one-fifth">
             <h3 className="title is-size-4">{props.ad.title}</h3>
             <p className="content">{props.ad.description}</p>
-            <button className="button is-info" onClick={() => { props.chooseSingleAd(props.ad.id) }}>Details</button>
+            <button className="button is-info" onClick={() => { props.selectAd(props.ad.id) }}>Details</button>
         </article>
     )
 }
@@ -678,6 +689,7 @@ function SavedAd(props) {
 // ! Component block sticks together END
 
 
+//? UserForms
 function PostAdForm(props) {
     let username = props.name;
     if (props.name === 'Gast') {
@@ -800,5 +812,6 @@ function RegistryForm(props) {
         </form>
     );
 }
+//? UserForms END
 
 export default Dapati
