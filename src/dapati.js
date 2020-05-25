@@ -214,7 +214,8 @@ class UserPage extends React.Component {
     componentDidUpdate() {
     }
     updateRoutine() {
-        this.props.getData("ad", this.props.token)
+        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
+        this.props.getData("ad?filter=" + filterParam, this.props.token)
             .then((res) => {
 
                 let sortedAds = new Map();
@@ -317,7 +318,8 @@ class GuestPage extends React.Component {
         }
     }
     componentDidMount() {
-        this.props.getData("ad").then((res) => {
+        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
+        this.props.getData("ad?filter=" + filterParam).then((res) => {
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
@@ -445,23 +447,24 @@ function SavedAd(props) {
 function SingleAd(props) {
     let button;
     if (props.token) {
-        button = <button onClick={props.saveAd}>Anzeige speichern</button>
+        button = <button className="button is-success" onClick={props.saveAd}>Anzeige speichern</button>
     } else {
         button = null;
     }
     return (
-        <>
-            <h2><b>Title:</b> {props.singleAd.title}</h2>
-            <p><b>erstellt:</b> {props.singleAd.createdAt}</p>
-            <p><b>Beschreibung:</b> {props.singleAd.description}</p>
+        <article className="box container has-text-centered">
+            <h2 className="title is-size-3"> {props.singleAd.title}</h2>
+            <p className="subtitle is-size-7"> {new Date(props.singleAd.createdAt).toLocaleDateString()}</p>
+            <div className="content">
+                <p className="title is-size-5">Beschreibung</p><p>{props.singleAd.description}</p>
             <p><b>Email:</b> {props.singleAd.email}</p>
-            <p><b>ID:</b> {props.singleAd.id}</p>
             <p><b>Ort:</b> {props.singleAd.location}</p>
             <p><b>Ansprechpartner:</b> {props.singleAd.name}</p>
-            <p><b>Preis:</b> {props.singleAd.price}</p>
-            <p><b>Verhandelbar:</b> {props.singleAd.priceNegotiable}</p>
+                <p><b>Preis:</b> {props.singleAd.price} € {props.singleAd.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+            </div>
+            {/* <p><b>Verhandelbar:</b> {props.singleAd.priceNegotiable}</p> */}
             {button}
-        </>
+        </article>
     )
 }
 
@@ -535,8 +538,8 @@ function Ad(props) {
     return (
         <article className="box">
             <h3 className="title">{props.ad.title}</h3>
-            <button onClick={() => { props.chooseSingleAd(props.ad.id) }}>Anzeigen-ID: {props.ad.id} (zeige Details)</button>
-            <p>{props.ad.description}</p>
+            <p className="content">{props.ad.description}</p>
+            <button className="button is-info" onClick={() => { props.chooseSingleAd(props.ad.id) }}>Details</button>
         </article>
     )
 }
