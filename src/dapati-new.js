@@ -8,7 +8,7 @@ import React from 'react';
 // import API from './API/fetch_methods';
 import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
-// var Perf = require('react-addons-perf'); // ES5 with npm
+
 
 class Dapati extends React.Component {
     constructor(props) {
@@ -31,12 +31,6 @@ class Dapati extends React.Component {
         if (localStorage.getItem('token')) {
             this.setState({ tokenAvailable: true })
         }
-        // Perf.start()
-    }
-    componentDidUpdate() {
-        // Perf.stop()
-        // Perf.printInclusive()
-        // Perf.printWasted()
     }
     getData = (endpoint, token = "") => {
         return apiAccessGet(this.state.serverUrl, endpoint, "GET", token)
@@ -267,42 +261,6 @@ class UserPage extends React.Component {
             })
         this.updateRoutine()
     }
-    searchFunction(eve) {
-        eve.preventDefault();
-        console.log(eve.target)
-    
-        let suchbegriffOrt;
-        let suchbegriffTitel;
-        let suchbegriffBegriff;
-    
-        eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
-        eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
-        eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-    
-        const filter =
-        {
-            limit: 20,
-            offset: 0,
-            where: {
-                and: [
-                    { location: { like: suchbegriffOrt, options: "i" } },
-                    { title: { like: suchbegriffTitel, options: "i" } },
-                    { description: { like: suchbegriffBegriff, options: "i" } }
-                ]
-            }
-        };
-    
-        const filterParam = encodeURIComponent(JSON.stringify(filter));
-    
-        this.props.getData(`ad/?filter=${filterParam}`)
-            .then((res) => {
-                console.log(res)
-                this.setState({ searchedAds: res })
-            })
-            .catch((err) => {
-                console.log('err', err)
-            })
-    }
     render() {
         let maincontent;
         let content = new Map([
@@ -340,7 +298,6 @@ class UserPage extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <SearchBar searchFunction={(eve)=>{this.searchFunction(eve)}}/>
                 <main>
                     {maincontent}
                 </main>
@@ -418,42 +375,13 @@ class GuestPage extends React.Component {
             activeTab: "Einzelartikel"
         })
     }
+    // ! added addionally
     searchFunction(eve) {
         eve.preventDefault();
         console.log(eve.target)
-    
-        let suchbegriffOrt;
-        let suchbegriffTitel;
-        let suchbegriffBegriff;
-    
-        eve.target[0].value ? (suchbegriffOrt = eve.target[0].value) : (suchbegriffOrt = "")
-        eve.target[1].value ? (suchbegriffTitel = eve.target[1].value) : (suchbegriffTitel = "")
-        eve.target[2].value ? (suchbegriffBegriff = eve.target[2].value) : (suchbegriffBegriff = "")
-    
-        const filter =
-        {
-            limit: 20,
-            offset: 0,
-            where: {
-                and: [
-                    { location: { like: suchbegriffOrt, options: "i" } },
-                    { title: { like: suchbegriffTitel, options: "i" } },
-                    { description: { like: suchbegriffBegriff, options: "i" } }
-                ]
-            }
-        };
-    
-        const filterParam = encodeURIComponent(JSON.stringify(filter));
-    
-        this.props.getData(`ad/?filter=${filterParam}`)
-            .then((res) => {
-                console.log(res)
-                this.setState({ searchedAds: res })
-            })
-            .catch((err) => {
-                console.log('err', err)
-            })
     }
+    // ! added addionally
+
     render() {
         let maincontent;
         let content = new Map([
@@ -464,7 +392,6 @@ class GuestPage extends React.Component {
             ['Registrieren fehlgeschlagen', <RegistryFail />],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
-
         maincontent = content.get(this.state.activeTab);
 
         return (
@@ -482,7 +409,15 @@ class GuestPage extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <SearchBar searchFunction={(eve)=>this.searchFunction(eve)}/>
+
+                {/* // ! added addionally */}
+                    <form onSubmit={(eve)=>{this.searchFunction(eve)}}>
+                        <input type="text" id="input1"/>
+                        <input type="text" id="input2"/>
+                        <button type="submit">Suche</button>
+                    </form>
+                {/* // ! added addionally */}
+
                 <main>
                     {maincontent}
                 </main>
@@ -491,18 +426,6 @@ class GuestPage extends React.Component {
     }
 }
 
-function SearchBar(props) {
-    return (
-        <>
-            <form onSubmit={(eve) => { props.searchFunction(eve) }}>
-                <input type="text" id="searchLocation" placeholder="Ort" />
-                <input type="text" id="searchTitle" placeholder="Titel" />
-                <input type="text" id="searchDescription" placeholder="Beschreibung" />
-                <button type="submit">Suche </button>
-            </form>
-        </>
-    )
-}
 
 
 // ----- Components and Functions need to sort
