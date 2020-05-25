@@ -312,14 +312,14 @@ class UserPage extends React.Component {
             ["Anzeige aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><SavedAdsView ads={this.state.savedAds} /></div>],
-            ["Message Center",<div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
         maincontent = content.get(this.state.activeTab)
 
         return (
-            <>
+            <>  <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
                 <div className="tabs is-medium is-boxed is-centered">
                     <ul>
                         <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
@@ -468,20 +468,18 @@ class GuestPage extends React.Component {
 
         return (
             <>
-                <SearchBar searchFunction={(eve)=>this.searchFunction(eve)}/>
-                <nav className="navbar is-flex-desktop has-text-centered">
-                <ul className="is-flex-desktop navbar-start" style={{flexGrow: "1", justifyContent: "center"}}>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
-                            Übersicht
+                <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
+
+                <div className="tabs is-medium is-boxed is-centered">
+                    <ul>
+                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
-                            Anzeige aufgeben
+                        <li className={this.state.activeTab === "Anzeige aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
                         </li>
-                        <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
-                            Registrieren
+                        <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Registrieren</a>
                         </li>
                     </ul>
-                </nav>
+                </div>
                 <main>
                     {maincontent}
                 </main>
@@ -498,7 +496,7 @@ function SearchBar(props) {
                 <input className="input column" type="text" id="searchTitle" placeholder="Titel" />
                 <input className="input column" type="text" id="searchDescription" placeholder="Beschreibung" />
                 <div className="column is-paddingless">
-                <button className="button is-fullwidth is-link" type="submit">Suche</button>
+                    <button className="button is-fullwidth is-link" type="submit">Suche</button>
                 </div>
             </form>
         </>
@@ -548,7 +546,7 @@ function SingleAd(props) {
         const oldDate = new Date(date).getTime();
         const newDate = new Date().getTime();
 
-        return Math.ceil((newDate-oldDate)/day)
+        return Math.ceil((newDate - oldDate) / day)
     }
 
     const days = daysOld(props.singleAd.createdAt);
@@ -557,7 +555,7 @@ function SingleAd(props) {
         <section className="section">
             <article className="box container has-text-centered column is-three-fifths is-offset-one-fifth">
                 <h2 className="title is-size-3"> {props.singleAd.title}</h2>
-                <p className="subtitle is-size-6"> {days} {days > 1 ? 'Tage':'Tag'} alt</p>
+                <p className="subtitle is-size-6"> {days} {days > 1 ? 'Tage' : 'Tag'} alt</p>
                 <div className="content">
                     <p className="title is-size-5">Beschreibung</p><p>{props.singleAd.description}</p>
                     <p><b>Email:</b> {props.singleAd.email}</p>
@@ -601,12 +599,12 @@ function LoginBar(props) {
             <form className="section" onSubmit={props.userLogin}>
                 <div className="field has-addons has-addons-centered is-three-fifths is-offset-one-fifth">
                     <div className="columns is-mobile">
-                    <div className="column">
-                    <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
-                    <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
-                    </div>
-                    <div className="column">
-                    <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Eingelogt Bleiben
+                        <div className="column">
+                            <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
+                            <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
+                        </div>
+                        <div className="column">
+                            <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Eingelogt Bleiben
                     </label>
                             <button className="button is-link is-small" type="submit">Login</button>
                         </div>
