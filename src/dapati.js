@@ -214,7 +214,8 @@ class UserPage extends React.Component {
     componentDidUpdate() {
     }
     updateRoutine() {
-        this.props.getData("ad", this.props.token)
+        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
+        this.props.getData("ad?filter="+filterParam, this.props.token)
             .then((res) => {
 
                 let sortedAds = new Map();
@@ -317,7 +318,8 @@ class GuestPage extends React.Component {
         }
     }
     componentDidMount() {
-        this.props.getData("ad").then((res) => {
+        const filterParam = encodeURIComponent(JSON.stringify({limit: 20, offset: 0}))
+        this.props.getData("ad?filter="+ filterParam).then((res) => {
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
