@@ -200,6 +200,7 @@ class UserPage extends React.Component {
             activeTab: "Übersicht",
             ubersicht: null,
             savedAds: null,
+            searchedAds: null,
             messageCenter: null,
             sortedAd: null,
             singleAd: null,
@@ -309,7 +310,8 @@ class UserPage extends React.Component {
         let maincontent;
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.ubersicht} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
-            ["Anzeige aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
+            ["Suche Ergebnis", <DisplaySearchBox ads={this.state.searchedAds} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><SavedAdsView ads={this.state.savedAds} /></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
@@ -324,7 +326,9 @@ class UserPage extends React.Component {
                     <ul>
                         <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
                         </li>
-                        <li className={this.state.activeTab === "Anzeige aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
+                        <li className={this.state.activeTab === "Suche Ergebnis" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis</a>
+                        </li>
+                        <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
                         </li>
                         <li className={this.state.activeTab === "Eigene Anzeigen" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Eigene Anzeigen</a>
                         </li>
@@ -354,7 +358,8 @@ class GuestPage extends React.Component {
             activeTab: "Übersicht",
             ubersicht: null,
             sortedAd: null,
-            singleAd: null
+            singleAd: null,
+            searchedAds: null
         }
     }
     componentDidMount() {
@@ -389,7 +394,7 @@ class GuestPage extends React.Component {
                         userInfo: res
                     });
                     this.setState({
-                        activeTab: "Registrieren erfolgreich"
+                        activeTab: "Registrieren Erfolgreich"
                     });
                 }
                 else {
@@ -397,14 +402,14 @@ class GuestPage extends React.Component {
                         userInfo: res
                     });
                     this.setState({
-                        activeTab: "Registrieren fehlgeschlagen"
+                        activeTab: "Registrieren Fehlgeschlagen"
                     });
                 }
             })
             .catch((err) => {
                 console.log(err);
                 this.setState({
-                    activeTab: "Registrieren fehlgeschlagen"
+                    activeTab: "Registrieren Fehlgeschlagen"
                 })
             })
     }
@@ -457,10 +462,11 @@ class GuestPage extends React.Component {
         let maincontent;
         let content = new Map([
             ['Übersicht', <DisplayBox ads={this.state.ubersicht} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
-            ['Anzeige aufgeben', <PostAdForm name={"Gast"} submitHandler={this.props.submitHandler} />],
+            ["Suche Ergebnis", <DisplaySearchBox ads={this.state.searchedAds} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
+            ['Anzeige Aufgeben', <PostAdForm name={"Gast"} submitHandler={this.props.submitHandler} />],
             ['Registrieren', <RegistryForm onSubmit={(eve) => { this.register(eve) }} />],
-            ['Registrieren erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
-            ['Registrieren fehlgeschlagen', <RegistryFail />],
+            ['Registrieren Erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
+            ['Registrieren Fehlgeschlagen', <RegistryFail />],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
 
@@ -474,7 +480,9 @@ class GuestPage extends React.Component {
                     <ul>
                         <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
                         </li>
-                        <li className={this.state.activeTab === "Anzeige aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
+                        <li className={this.state.activeTab === "Suche Ergebnis" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis</a>
+                        </li>
+                        <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige Aufgeben</a>
                         </li>
                         <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Registrieren</a>
                         </li>
@@ -634,6 +642,17 @@ function Header(props) {
 }
 
 function DisplayBox(props) {
+    return (
+
+        <section className="section has-background-light">
+            <div className="hero-body">
+                {props.ads && props.ads.map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
+            </div>
+        </section>
+    )
+}
+
+function DisplaySearchBox(props) {
     return (
 
         <section className="section has-background-light">
