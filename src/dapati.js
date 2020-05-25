@@ -15,12 +15,16 @@ import { userLogin, apiAccessGet, apiAccessPost, apiAccessPatch, apiAccessDelete
 // * Regular methods implemented by responsible class
 
 //? Used by UserPage and GuestPage
-function changeTab(eve) {
+function changeTab(eve, add="") {
     console.log(eve.target.textContent)
-    this.setState({
-        activeTab: eve.target.textContent
-    })
-    if (eve.target.textContent === "Übersicht") {
+    if (add===""){
+        this.setState({
+            activeTab: eve.target.textContent
+        })
+    }else{
+        this.setState({
+            activeTab: add
+        })
     }
 }
 //? Used by UserPage and GuestPage
@@ -59,6 +63,7 @@ function searchFunction(eve) {
         .catch((err) => {
             console.log('err', err)
         })
+    this.setState({activeTab: "Suche Ergebnis"})
 }
 //? Used by UserPage and GuestPage
 function updateRoutineBasic() {
@@ -97,7 +102,30 @@ function getAccountInfo() {
         })
     })
 }
-
+//? Used by UserPage
+function deleteCreatedAd(adId){
+    this.props.deleteData(`ad/${adId}`, this.props.token, {id: adId})
+    .then((res)=>{
+        console.log('res deleteSavedAd', res)
+        alert("Anzeige erfolgreich gelöscht")
+    })
+    .catch((err) => {
+        console.log('err deleteSavedAd', err)
+        alert("Check Log for Details")
+    })
+}
+//? Used by UserPage
+function patchCreatedAd(adId){
+    this.props.patchData(`ad/${adId}`, this.props.token, {id: adId})
+    .then((res)=>{
+        console.log('res patchData', res)
+        alert("Anzeige erfolgreich geändert")
+    })
+    .catch((err) => {
+        console.log('err patchData', err)
+        alert("Check Log for Details")
+    })
+}
 // * End
 
 
@@ -136,6 +164,14 @@ class Dapati extends React.Component {
     postData = (endpoint, token, body = {}) => {
         return apiAccessPost(this.state.serverUrl, endpoint, "POST", token, body)
     }
+    deleteData = (endpoint, token, body = {}) => {
+        return apiAccessDelete(this.state.serverUrl, endpoint, "DELETE", token, body)
+    }
+    patchData = (endpoint, token, body = {}) => {
+        return apiAccessPatch(this.state.serverUrl, endpoint, "PATCH", token, body)
+    }
+
+
     userLogin = (eve) => {
         eve.preventDefault();
 
@@ -260,6 +296,8 @@ class Dapati extends React.Component {
                     getData={this.getData}
                     submitHandler={this.submitHandler}
                     postData={this.postData}
+                    deleteData={this.deleteData}
+                    patchData={this.patchData}
                 />
 
         } else {
@@ -273,6 +311,8 @@ class Dapati extends React.Component {
                     getData={this.getData}
                     postData={this.postData}
                     submitHandler={this.submitHandler}
+                    deleteData={this.deleteData}
+                    patchData={this.patchData}
                 />
         }
         return (
@@ -293,6 +333,8 @@ class UserPage extends React.Component {
         this.updateRoutineBasic = updateRoutineBasic.bind(this);
         this.updateRoutineUser = updateRoutineUser.bind(this);
         this.getAccountInfo = getAccountInfo.bind(this);
+        this.deleteCreatedAd = deleteCreatedAd.bind(this)
+        this.patchCreatedAd = patchCreatedAd.bind(this)
         this.state = {
             activeTab: "Übersicht",
             savedAds: null,
@@ -321,10 +363,11 @@ class UserPage extends React.Component {
         this.setState({
             activeTab: "Einzelartikel"
         })
+        this.updateRoutineUser()
     }
 
     saveAd() {
-        if (this.state.sortedAd.get(this.state.singleAd.id)) {
+        if (this.state.savedAds.get(this.state.singleAd.id)) {
             alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
             this.updateRoutineUser()
             return;
@@ -340,6 +383,18 @@ class UserPage extends React.Component {
             })
         this.updateRoutineUser()
     }
+    deleteSavedAd(adId){
+        this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, {id: adId})
+        .then((res)=>{
+            console.log('res deleteSavedAd', res)
+            alert("Anzeige erfolgreich gelöscht")
+        })
+        .catch((err) => {
+            console.log('err deleteSavedAd', err)
+            alert("Check Log for Details")
+        })
+        this.updateRoutineUser()
+    }
 
     render() {
         let maincontent;
@@ -352,13 +407,13 @@ class UserPage extends React.Component {
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" /></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
-            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
+            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
         maincontent = content.get(this.state.activeTab)
 
         if (this.state.searchedAds) {
             sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
+                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "is-info" && "is-light"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
                 </li>
         }
 
@@ -470,7 +525,7 @@ class GuestPage extends React.Component {
 
         if (this.state.searchedAds) {
             sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "button is-info is-light"} onClick={(eve) => { this.changeTab(eve) }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
+                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "is-info" && "is-light"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis</a><span>({this.state.searchedAds.length})</span>
                 </li>
         }
 
@@ -522,8 +577,13 @@ function SearchBar(props) {
 function SingleAd(props) {
     let button;
     if (props.token) {
-        if ((this.state.sortedAd.get(this.state.singleAd.id))) {
-            button = <button> ! Bereits Gespeichert !</button>
+        if (props.savedAds.get(props.singleAd.id)) {
+            button = 
+            <>
+            <button className="button is-info is-light is-small"> ! Bereits Gespeichert !</button><br/>
+            <button className="button is-danger"> Anzeige aus Merkliste löschen</button>
+            </>
+
         } else {
             button = <button className="button is-success" onClick={props.saveAd}>Anzeige speichern</button>
         }
@@ -683,6 +743,7 @@ function SavedAd(props) {
                 <p><b>Ansprechpartner:</b> {props.ad.name}</p>
                 <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
             </div>
+            <button className="button is-danger">Anzeige aus Merkliste löschen</button>
         </article>
     )
 }
