@@ -615,6 +615,7 @@ function DisplayBox(props) {
     return (
 
         <section className="section has-background-light">
+            <h1 className="title has-text-centered">DaPaTi Anzeigen</h1>
             <div className="hero-body">
                 {props.ads && props.ads.map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
             </div>
@@ -626,6 +627,7 @@ function DisplaySearchBox(props) {
     return (
 
         <section className="section has-background-light">
+            <h1 className="title has-text-centered">Gesuchte Anzeigen</h1>
             <div className="hero-body">
                 {props.ads && props.ads.map(ad => <Ad key={ad.id} ad={ad} chooseSingleAd={(id) => { props.chooseSingleAd(id) }} />)}
             </div>
