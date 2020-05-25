@@ -56,6 +56,33 @@ function searchFunction(eve) {
         })
 }
 
+function updateRoutineBasic() {
+    const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
+
+    this.props.getData("ad?filter=" + filterParam, this.props.token)
+        .then((res) => {
+
+            let sortedAds = new Map();
+            res.forEach((article) => {
+                sortedAds.set(article.id, article)
+            })
+            this.setState({ sortedAd: sortedAds })
+            this.setState({ ubersicht: res })
+        })
+}
+
+function updateRoutineUser() {
+
+    this.props.getData("user/me/saved-ad", this.props.token)
+        .then((res) => {
+            this.setState({ savedAds: res })
+        })
+    this.props.getData("user/me/conversations", this.props.token)
+        .then((res) => {
+            this.setState({ messageCenter: res })
+        })
+}
+
 
 
 
@@ -247,6 +274,8 @@ class UserPage extends React.Component {
         super(props);
         this.changeTab = changeTab.bind(this);
         this.searchFunction = searchFunction.bind(this);
+        this.updateRoutineBasic = updateRoutineBasic.bind(this);
+        this.updateRoutineUser = updateRoutineUser.bind(this);
         this.state = {
             activeTab: "Übersicht",
             ubersicht: null,
@@ -262,37 +291,17 @@ class UserPage extends React.Component {
         }
     }
     componentDidMount() {
-        this.updateRoutine();
+        this.updateRoutineBasic();
+        this.updateRoutineUser();
+
         this.props.getData("user/me", this.props.token).then((res) => {
             this.setState({
                 userInfo: res
             })
         })
+
     };
-    componentDidUpdate() {
-    }
-    updateRoutine() {
-        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
-        this.props.getData("ad?filter=" + filterParam, this.props.token)
-            .then((res) => {
-
-                let sortedAds = new Map();
-                res.forEach((article) => {
-                    sortedAds.set(article.id, article)
-                })
-                this.setState({ sortedAd: sortedAds })
-                this.setState({ ubersicht: res })
-            })
-        this.props.getData("user/me/saved-ad", this.props.token)
-            .then((res) => {
-                this.setState({ savedAds: res })
-            })
-        this.props.getData("user/me/conversations", this.props.token)
-            .then((res) => {
-                this.setState({ messageCenter: res })
-            })
-    }
-
+ 
     chooseSingleAd(id) {
         console.log(id)
         this.setState({
