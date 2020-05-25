@@ -310,10 +310,10 @@ class UserPage extends React.Component {
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.ubersicht} chooseSingleAd={(id) => this.chooseSingleAd(id)} />],
             ["Anzeige aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <h3>Eigene Anzeigen</h3>],
-            ["Gespeicherte Anzeigen", <SavedAdsView ads={this.state.savedAds} />],
-            ["Message Center", <h3>Message Center</h3>],
-            ["Account-Info", <><h3>Account-Info</h3><p>ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></>],
+            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3></div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><SavedAdsView ads={this.state.savedAds} /></div>],
+            ["Message Center",<div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
+            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
         maincontent = content.get(this.state.activeTab)
@@ -339,7 +339,6 @@ class UserPage extends React.Component {
                         </li>
                     </ul>
                 </div>
-                <SearchBar searchFunction={(eve) => { this.searchFunction(eve) }} />
                 <main>
                     {maincontent}
                 </main>
@@ -469,8 +468,9 @@ class GuestPage extends React.Component {
 
         return (
             <>
-                <nav className="navbar has-text-centered is-light">
-                    <ul className="is-flex-desktop-only">
+                <SearchBar searchFunction={(eve)=>this.searchFunction(eve)}/>
+                <nav className="navbar is-flex-desktop has-text-centered">
+                <ul className="is-flex-desktop navbar-start" style={{flexGrow: "1", justifyContent: "center"}}>
                         <li className="navbar-link" onClick={(eve) => { this.changeTab(eve) }}>
                             Übersicht
                         </li>
@@ -482,7 +482,6 @@ class GuestPage extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
                 <main>
                     {maincontent}
                 </main>
@@ -494,11 +493,13 @@ class GuestPage extends React.Component {
 function SearchBar(props) {
     return (
         <>
-            <form onSubmit={(eve) => { props.searchFunction(eve) }}>
-                <input type="text" id="searchLocation" placeholder="Ort" />
-                <input type="text" id="searchTitle" placeholder="Titel" />
-                <input type="text" id="searchDescription" placeholder="Beschreibung" />
-                <button type="submit">Suche </button>
+            <form className="section columns" onSubmit={(eve) => { props.searchFunction(eve) }}>
+                <input className="input column" type="text" id="searchLocation" placeholder="Ort" />
+                <input className="input column" type="text" id="searchTitle" placeholder="Titel" />
+                <input className="input column" type="text" id="searchDescription" placeholder="Beschreibung" />
+                <div className="column is-paddingless">
+                <button className="button is-fullwidth is-link" type="submit">Suche</button>
+                </div>
             </form>
         </>
     )
@@ -511,7 +512,9 @@ function SearchBar(props) {
 function SavedAdsView(props) {
     return (
         <section className="section">
-            {props.ads && props.ads.map(ad => <SavedAd ad={ad} />)}
+            <div className="hero-body">
+                {props.ads && props.ads.map(ad => <SavedAd ad={ad} />)}
+            </div>
         </section>
     )
 }
@@ -598,12 +601,12 @@ function LoginBar(props) {
             <form className="section" onSubmit={props.userLogin}>
                 <div className="field has-addons has-addons-centered is-three-fifths is-offset-one-fifth">
                     <div className="columns is-mobile">
-                        <div className="column">
-                            <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
-                            <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
-                        </div>
-                        <div className="column">
-                            <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Remember Login
+                    <div className="column">
+                    <input className="input is-small is-rounded" type="email" id="name" name="email" placeholder="Email" />
+                    <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
+                    </div>
+                    <div className="column">
+                    <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Eingelogt Bleiben
                     </label>
                             <button className="button is-link is-small" type="submit">Login</button>
                         </div>
@@ -661,24 +664,24 @@ function PostAdForm(props) {
     }
     return (
         <form id="postadform" onSubmit={props.submitHandler}>
-            <div className="box column is-three-fifths is-offset-one-fifth">
-                <h1 className="title has-text-centered">New Ad</h1>
+            <div className="box column has-background-light is-three-fifths is-offset-one-fifth">
+                <h1 className="title has-text-centered">Neue Anzeige</h1>
                 <div className="field">
-                    <label className="label">Title</label>
+                    <label className="label">Titel</label>
                     <div className="control">
-                        <input className="input" type="text" name="title" placeholder="Awesome Product For Sale!" />
+                        <input className="input" type="text" name="title" placeholder="Tolles Product Zur Verkaufen!" />
                     </div>
                 </div>
 
                 <div className="field">
-                    <label className="label">Name</label>
+                    <label className="label">Namen</label>
                     <div className="control">
                         <input className="input" type="text" name="name" defaultValue={username} placeholder={props.name} />
                     </div>
                 </div>
 
                 <div className="field">
-                    <label className="label">Location</label>
+                    <label className="label">Ort</label>
                     <div className="control">
                         <input className="input" type="text" name="location" placeholder="Hamburg" />
                     </div>
@@ -687,20 +690,19 @@ function PostAdForm(props) {
                 <div className="field">
                     <label className="label">Email</label>
                     <div className="control">
-                        <input className="input regemail" type="email" name="email" placeholder="my@email.com" defaultValue={props.email} />
+                        <input className="input regemail" type="email" name="email" placeholder="mein@email.com" defaultValue={props.email} />
                     </div>
-                    <p className="help emailalert"></p>
                 </div>
 
                 <div className="field">
-                    <label className="label">Description</label>
+                    <label className="label">Beschreibung</label>
                     <div className="control">
-                        <textarea className="textarea" name="description" placeholder="My awesome product is awesome because..." ></textarea>
+                        <textarea className="textarea" name="description" placeholder="Mein product ist toll, weil..." ></textarea>
                     </div>
                 </div>
 
                 <div className="field">
-                    <label className="label">Price</label>
+                    <label className="label">Preis</label>
                     <div className="control">
                         <input className="input" type="number" name="price" placeholder="00.00 €" min="0" />
                     </div>
@@ -709,20 +711,20 @@ function PostAdForm(props) {
                 <div className="field">
                     <div className="control">
                         <label htmlFor="negoYes" className="radio">
-                            <input type="radio" id="negoYes" name="priceNegotiable" /> Negotiable
+                            <input type="radio" id="negoYes" name="priceNegotiable" /> Verhandelbar
                     </label>
                         <label htmlFor="negoNo" className="radio">
-                            <input type="radio" id="negoNo" name="priceNegotiable" /> Fixed Price
+                            <input type="radio" id="negoNo" name="priceNegotiable" /> Festpreis
                     </label>
                     </div>
                 </div>
 
                 <div className="field is-grouped">
                     <div className="control">
-                        <button className="button is-link" type="submit">Submit</button>
+                        <button className="button is-link" type="submit">Aufgeben</button>
                     </div>
                     <div className="control">
-                        <button className="button is-link is-light">Cancel</button>
+                        <button className="button is-link is-light">Abrechen</button>
                     </div>
                 </div>
             </div>
@@ -732,23 +734,21 @@ function PostAdForm(props) {
 function RegistryForm(props) {
     return (
         <form onSubmit={props.onSubmit}>
-            <div id="registryform" className="box column is-three-fifths is-offset-one-fifth">
+            <div id="registryform" className="box column is-three-fifths is-offset-one-fifth has-background-light">
                 <h1 className="title has-text-centered">Register</h1>
 
                 <div className="field">
-                    <label className="label">Username</label>
+                    <label className="label">Namen</label>
                     <div className="control">
-                        <input className="input" type="text" placeholder="Text input" />
+                        <input className="input" type="text" placeholder="Mein Name" />
                     </div>
-                    <p className="help usernamealert"></p>
                 </div>
 
                 <div className="field">
                     <label className="label">Email</label>
                     <div className="control">
-                        <input className="input regemail" type="email" placeholder="Email input" />
+                        <input className="input regemail" type="email" placeholder="mein@email.com" />
                     </div>
-                    <p className="help emailalert"></p>
                 </div>
 
                 <div className="field">
@@ -756,24 +756,23 @@ function RegistryForm(props) {
                     <div className="control">
                         <input className="input" type="password" placeholder="Passwort" />
                     </div>
-                    <p className="help usernamealert"></p>
                 </div>
 
                 <div className="field">
                     <div className="control">
                         <label className="checkbox">
-                            <input type="checkbox" /> I agree to the{" "}
-                            <a href="https://policies.google.com/terms?hl=en-US">terms and conditions</a>
+                            <input type="checkbox" /> Ich stimme die {" "}
+                            <a href="https://policies.google.com/terms?hl=en-US">Datenschutzbedinungen</a> zu
                         </label>
                     </div>
                 </div>
 
                 <div className="field is-grouped">
                     <div className="control">
-                        <button className="button is-link" type="submit">Submit</button>
+                        <button className="button is-link" type="submit">Register</button>
                     </div>
                     <div className="control">
-                        <button className="button is-link is-light">Cancel</button>
+                        <button className="button is-link is-light">Abrechen</button>
                     </div>
                 </div>
             </div>
