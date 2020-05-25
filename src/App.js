@@ -1,12 +1,9 @@
 import React from 'react';
-import './App.css';
-import Dapati from './dapati.js'
+import Dapati from './dapati';
 
 function App() {
   return (
-    <>
     <Dapati />
-    </>
   );
 }
 
