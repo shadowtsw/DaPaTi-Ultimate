@@ -83,6 +83,14 @@ function updateRoutineUser() {
         })
 }
 
+function getAccountInfo() {
+    this.props.getData("user/me", this.props.token).then((res) => {
+        this.setState({
+            userInfo: res
+        })
+    })
+}
+
 
 
 
@@ -276,6 +284,7 @@ class UserPage extends React.Component {
         this.searchFunction = searchFunction.bind(this);
         this.updateRoutineBasic = updateRoutineBasic.bind(this);
         this.updateRoutineUser = updateRoutineUser.bind(this);
+        this.getAccountInfo = getAccountInfo.bind(this);
         this.state = {
             activeTab: "Übersicht",
             ubersicht: null,
@@ -294,13 +303,7 @@ class UserPage extends React.Component {
     componentDidMount() {
         this.updateRoutineBasic();
         this.updateRoutineUser();
-
-        this.props.getData("user/me", this.props.token).then((res) => {
-            this.setState({
-                userInfo: res
-            })
-        })
-
+        this.getAccountInfo();
     };
  
     chooseSingleAd(id) {
@@ -373,6 +376,7 @@ class GuestPage extends React.Component {
         super(props);
         this.changeTab = changeTab.bind(this);
         this.searchFunction = searchFunction.bind(this);
+        this.updateRoutineBasic = updateRoutineBasic.bind(this);
         this.state = {
             activeTab: "Übersicht",
             ubersicht: null,
@@ -382,15 +386,7 @@ class GuestPage extends React.Component {
         }
     }
     componentDidMount() {
-        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
-        this.props.getData("ad?filter=" + filterParam).then((res) => {
-            let sortedAds = new Map();
-            res.forEach((article) => {
-                sortedAds.set(article.id, article)
-            })
-            this.setState({ sortedAd: sortedAds })
-            this.setState({ ubersicht: res })
-        })
+        this.updateRoutineBasic();
     };
 
     register(eve) {
