@@ -215,7 +215,7 @@ class UserPage extends React.Component {
     }
     updateRoutine() {
         const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
-        this.props.getData("ad?filter="+filterParam, this.props.token)
+        this.props.getData("ad?filter=" + filterParam, this.props.token)
             .then((res) => {
 
                 let sortedAds = new Map();
@@ -318,8 +318,8 @@ class GuestPage extends React.Component {
         }
     }
     componentDidMount() {
-        const filterParam = encodeURIComponent(JSON.stringify({limit: 20, offset: 0}))
-        this.props.getData("ad?filter="+ filterParam).then((res) => {
+        const filterParam = encodeURIComponent(JSON.stringify({ limit: 20, offset: 0 }))
+        this.props.getData("ad?filter=" + filterParam).then((res) => {
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
@@ -537,8 +537,8 @@ function Ad(props) {
     return (
         <article className="box">
             <h3 className="title">{props.ad.title}</h3>
-            <button onClick={() => { props.chooseSingleAd(props.ad.id) }}>Anzeigen-ID: {props.ad.id} (zeige Details)</button>
-            <p>{props.ad.description}</p>
+            <p className="content">{props.ad.description}</p>
+            <button className="button is-info" onClick={() => { props.chooseSingleAd(props.ad.id) }}>Details</button>
         </article>
     )
 }
