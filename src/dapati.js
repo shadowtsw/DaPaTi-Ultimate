@@ -305,6 +305,35 @@ class Dapati extends React.Component {
         }
         alert(`Your ad "${adData.title}" has been successfully posted!`)
     }
+    submitHandlerUpdate = (eve) => {
+        eve.preventDefault();
+
+        const adDataUser = {
+            title: eve.target[0].value,
+            name: eve.target[1].value,
+            location: eve.target[2].value,
+            phone: "0190 66666",
+            description: eve.target[4].value,
+            price: +eve.target[5].value,
+            priceNegotiable: eve.target[6].checked ? true : false
+        }
+
+        const id = eve.target[8].value;
+
+        if (this.state.tokenAvailable === true) {
+            console.log(this.state.token);
+            console.log(typeof (this.state.token))
+            this.patchData(`ad/${id}`, this.state.token, adDataUser)
+                .then((res) => {
+                    console.log('mit token', res)
+                })
+                .catch((err) => {
+                    console.log('mit-token', err)
+                })
+        }
+        alert(`Your ad "${adDataUser.title}" has been successfully edited!`)
+    }
+
     render() {
         let maincontent;
         let userNav;
@@ -325,6 +354,7 @@ class Dapati extends React.Component {
                     postData={this.postData}
                     deleteData={this.deleteData}
                     patchData={this.patchData}
+                    submitHandlerUpdate={this.submitHandlerUpdate}
                 />
 
         } else {
@@ -415,6 +445,14 @@ class UserPage extends React.Component {
         this.updateRoutineBasic()
         this.updateRoutineUser()
     }
+    editAd(id){
+        this.setState({
+            editAd: this.state.savedAds.get(id)
+        })
+        this.setState({
+            activeTab: "Anzeige bearbeiten"
+        })        
+    }
 
     render() {
         let maincontent;
@@ -422,12 +460,13 @@ class UserPage extends React.Component {
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
-            ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} /> </div>],
+            ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
+            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }}/> </div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
-            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />]
+            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
+            ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
         ])
         maincontent = content.get(this.state.activeTab)
 
@@ -734,7 +773,7 @@ function DisplayBox(props) {
         return (
             <section className="section">
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId} deleteCreatedAd={(id) => { props.deleteCreatedAd(id) }} />)}
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId} deleteCreatedAd={(id) => { props.deleteCreatedAd(id) }} editAd={(id) => { props.editAd(id) }} />)}
                 </div>
             </section>
         )
@@ -766,7 +805,7 @@ function SavedAd(props) {
                     <p><b>Ansprechpartner:</b> {props.ad.name}</p>
                     <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
                 </div>
-                <button className="button is-warning">Anzeige bearbeiten</button>
+                <button className="button is-warning" onClick={()=>{props.editAd(props.ad.id)}}>Anzeige bearbeiten</button>
                 <button className="button is-danger" onClick={() => { props.deleteCreatedAd(props.ad.id) }}>Anzeige löschen</button>
                 <p>{props.meineId}</p>
             </article>
@@ -797,75 +836,155 @@ function PostAdForm(props) {
     if (props.name === 'Gast') {
         username = "";
     }
-    return (
-        <form id="postadform" onSubmit={props.submitHandler}>
-            <div className="box column has-background-light is-three-fifths is-offset-one-fifth">
-                <h1 className="title has-text-centered">Neue Anzeige</h1>
-                <div className="field">
-                    <label className="label">Titel</label>
-                    <div className="control">
-                        <input className="input" type="text" name="title" placeholder="Tolles Product Zur Verkaufen!" />
+    if (props.new) {
+        return (
+            <form id="postadform" onSubmit={props.submitHandler}>
+                <div className="box column has-background-light is-three-fifths is-offset-one-fifth">
+                    <h1 className="title has-text-centered">Neue Anzeige</h1>
+                    <div className="field">
+                        <label className="label">Titel</label>
+                        <div className="control">
+                            <input className="input" type="text" name="title" placeholder="Tolles Product Zur Verkaufen!" />
+                        </div>
                     </div>
-                </div>
 
-                <div className="field">
-                    <label className="label">Namen</label>
-                    <div className="control">
-                        <input className="input" type="text" name="name" defaultValue={username} placeholder={props.name} />
+                    <div className="field">
+                        <label className="label">Namen</label>
+                        <div className="control">
+                            <input className="input" type="text" name="name" defaultValue={username} placeholder={props.name} />
+                        </div>
                     </div>
-                </div>
 
-                <div className="field">
-                    <label className="label">Ort</label>
-                    <div className="control">
-                        <input className="input" type="text" name="location" placeholder="Hamburg" />
+                    <div className="field">
+                        <label className="label">Ort</label>
+                        <div className="control">
+                            <input className="input" type="text" name="location" placeholder="Hamburg" />
+                        </div>
                     </div>
-                </div>
 
-                <div className="field">
-                    <label className="label">Email</label>
-                    <div className="control">
-                        <input className="input regemail" type="email" name="email" placeholder="mein@email.com" defaultValue={props.email} />
+                    <div className="field">
+                        <label className="label">Email</label>
+                        <div className="control">
+                            <input className="input regemail" type="email" name="email" placeholder="mein@email.com" defaultValue={props.email} />
+                        </div>
                     </div>
-                </div>
 
-                <div className="field">
-                    <label className="label">Beschreibung</label>
-                    <div className="control">
-                        <textarea className="textarea" name="description" placeholder="Mein product ist toll, weil..." ></textarea>
+                    <div className="field">
+                        <label className="label">Beschreibung</label>
+                        <div className="control">
+                            <textarea className="textarea" name="description" placeholder="Mein product ist toll, weil..." ></textarea>
+                        </div>
                     </div>
-                </div>
 
-                <div className="field">
-                    <label className="label">Preis</label>
-                    <div className="control">
-                        <input className="input" type="number" name="price" placeholder="00.00 €" min="0" step="0.01" />
+                    <div className="field">
+                        <label className="label">Preis</label>
+                        <div className="control">
+                            <input className="input" type="number" name="price" placeholder="00.00 €" min="0" step="0.01" />
+                        </div>
                     </div>
-                </div>
 
-                <div className="field">
-                    <div className="control">
-                        <label htmlFor="negoYes" className="radio">
-                            <input type="radio" id="negoYes" name="priceNegotiable" /> Verhandelbar
-                    </label>
-                        <label htmlFor="negoNo" className="radio">
-                            <input type="radio" id="negoNo" name="priceNegotiable" /> Festpreis
-                    </label>
+                    <div className="field">
+                        <div className="control">
+                            <label htmlFor="negoYes" className="radio">
+                                <input type="radio" id="negoYes" name="priceNegotiable" /> Verhandelbar
+                        </label>
+                            <label htmlFor="negoNo" className="radio">
+                                <input type="radio" id="negoNo" name="priceNegotiable" /> Festpreis
+                        </label>
+                        </div>
                     </div>
-                </div>
 
-                <div className="field is-grouped">
-                    <div className="control">
-                        <button className="button is-link" type="submit">Aufgeben</button>
-                    </div>
-                    <div className="control">
-                        <button className="button is-link is-light">Abrechen</button>
+                    <div className="field is-grouped">
+                        <div className="control">
+                            <button className="button is-link" type="submit">Aufgeben</button>
+                        </div>
+                        <div className="control">
+                            <button className="button is-link is-light">Abrechen</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
-    )
+            </form>
+        )
+    }
+    else {
+        return (
+            <form id="postadform" onSubmit={props.submitHandler}>
+                <div className="box column has-background-light is-three-fifths is-offset-one-fifth">
+                    <h1 className="title has-text-centered">Neue Anzeige</h1>
+                    <div className="field">
+                        <label className="label">Titel</label>
+                        <div className="control">
+                            <input className="input" type="text" name="title" defaultValue={props.editAd.title} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">Namen</label>
+                        <div className="control">
+                            <input className="input" type="text" name="name" defaultValue={props.editAd.name} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">Ort</label>
+                        <div className="control">
+                            <input className="input" type="text" name="location" defaultValue={props.editAd.location} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">Email</label>
+                        <div className="control">
+                            <input className="input regemail" type="email" name="email" defaultValue={props.editAd.email} />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">Beschreibung</label>
+                        <div className="control">
+                            <textarea className="textarea" name="description" defaultValue={props.editAd.description}></textarea>
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">Preis</label>
+                        <div className="control">
+                            <input className="input" type="number" name="price" defaultValue={props.editAd.price} min="0" step="0.01" />
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <div className="control">
+                            <label htmlFor="negoYes" className="radio">
+                                <input type="radio" id="negoYes" name="priceNegotiable" /> Verhandelbar
+                        </label>
+                            <label htmlFor="negoNo" className="radio">
+                                <input type="radio" id="negoNo" name="priceNegotiable" /> Festpreis
+                        </label>
+                        </div>
+                    </div>
+
+                    <div className="field">
+                        <label className="label">Deine Anzeigen-ID</label>
+                        <div className="control">
+                            <input className="input" type="string" name="id" value={props.editAd.id}/>
+                        </div>
+                    </div>
+
+                    <div className="field is-grouped">
+                        <div className="control">
+                            <button className="button is-link" type="submit">Aufgeben</button>
+                        </div>
+                        <div className="control">
+                            <button className="button is-link is-light">Abrechen</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        )
+    }
 }
+
 function RegistryForm(props) {
     return (
         <form onSubmit={props.onSubmit}>
