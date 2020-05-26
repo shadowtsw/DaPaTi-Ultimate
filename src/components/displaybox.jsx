@@ -31,7 +31,7 @@ function DisplayBox(props) {
         return (
             <section className="section">
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId} deleteSavedAd={(id) => { props.deleteSavedAd(id) }} />)}
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId} deleteSavedAd={(id) => { props.deleteSavedAd(id) }} writeMessage={(ad)=>{props.writeMessage(ad)}}/>)}
                 </div>
             </section>
         )

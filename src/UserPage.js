@@ -4,8 +4,8 @@ import DisplayBox from './components/DisplayBox';
 import PostAdForm from './components/PostAdForm';
 import SingleAd from './components/SingleAd';
 import SearchBar from './components/SearchBar';
-import {selectAd, updateRoutineBasic, searchFunction, changeTab} from './components/functions/user-and-guest-page-functions';
-import {patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser} from './components/functions/user-page-functions';
+import { selectAd, updateRoutineBasic, searchFunction, changeTab } from './components/functions/user-and-guest-page-functions';
+import { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser } from './components/functions/user-page-functions';
 
 //! MainComponent LoggedIn
 export default class UserPage extends React.Component {
@@ -27,6 +27,7 @@ export default class UserPage extends React.Component {
             messageCenter: null,
             sortedAd: null,
             singleAd: null,
+            messages: null,
             userInfo: {
                 id: "",
                 name: "",
@@ -80,6 +81,47 @@ export default class UserPage extends React.Component {
             activeTab: "Anzeige bearbeiten"
         })
     }
+    messageHandler(eve) {
+        this.setState({
+            messageText: eve.target.value
+        })
+    }
+    writeMessage(ad) {
+
+        console.log(ad)
+
+        // if (!this.state.messages.get(ad.id)) {
+
+        // }
+
+        let newArray
+        let layout =
+            <>
+                <h3>Message Test</h3>
+                <h4>Zu Artikel {ad.title}</h4>
+                <h4>Empfänger {ad.userId}</h4>
+                <h4>Von</h4>
+                <input type="text" name="message" onChange={(eve) => { this.messageHandler(eve) }} />
+                <button onClick={() => { this.sendMessage(ad.id, ad.userId, this.state.messageText) }}>Send</button>
+            </>
+
+        newArray = new Map();
+        newArray.set(ad.id, layout)
+
+        this.setState({
+            messages: newArray
+        })
+
+    }
+    sendMessage(adId, userId, usertext) {
+        this.props.postData(`/ad/${adId}/message/${userId}`, this.props.token, { text: usertext })
+            .then((res) => {
+                console.log(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
     render() {
         let maincontent;
@@ -89,8 +131,8 @@ export default class UserPage extends React.Component {
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(ad) => { this.writeMessage(ad) }} /> </div>],
+        ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3>{this.state.messages}</div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
