@@ -58,7 +58,11 @@ function searchFunction(eve) {
     this.props.getData(`ad/?filter=${filterParam}`)
         .then((res) => {
             console.log(res)
-            this.setState({ searchedAds: res })
+            let sortedAds = new Map();
+            res.forEach((article) => {
+                sortedAds.set(article.id, article)
+            })
+            this.setState({ searchedAds: sortedAds })
         })
         .catch((err) => {
             console.log('err', err)
@@ -499,11 +503,17 @@ class GuestPage extends React.Component {
                 })
             })
     }
-    selectAd(id) {
+    selectAd(id, origin="") {
         console.log(id)
-        this.setState({
-            singleAd: this.state.sortedAd.get(id)
-        })
+        if (origin === "Suche Ergebnis") {
+            this.setState({
+                singleAd: this.state.searchedAds.get(id)
+            })
+        } else {
+            this.setState({
+                singleAd: this.state.sortedAd.get(id)
+            })
+        }
         this.setState({
             activeTab: "Einzelartikel"
         })
@@ -514,12 +524,12 @@ class GuestPage extends React.Component {
         let sucheErgebnis;
         let content = new Map([
             ['Übersicht', <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
-            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id)} />],
+            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ['Anzeige Aufgeben', <PostAdForm name={"Gast"} submitHandler={this.props.submitHandler} />],
             ['Registrieren', <RegistryForm onSubmit={(eve) => { this.register(eve) }} />],
             ['Registrieren Erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
             ['Registrieren Fehlgeschlagen', <RegistryFail />],
-            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} saveAd={() => { this.saveAd() }} token={this.props.token} />]
+            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
 
         maincontent = content.get(this.state.activeTab);
@@ -578,7 +588,7 @@ function SearchBar(props) {
 function SingleAd(props) {
     let button;
     if (props.token) {
-        if (props.savedAds.get(props.singleAd.id)) {
+        if (props.singleAd.id && props.savedAds.get(props.singleAd.id)) {
             button =
                 <>
                     <button className="button is-info is-light is-small"> ! Bereits Gespeichert !</button><br />
