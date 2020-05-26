@@ -168,7 +168,7 @@ function selectAd(id, origin = "") {
 // * End
 
 
-
+//! Login Layer
 class Dapati extends React.Component {
     constructor(props) {
         super(props);
@@ -393,7 +393,7 @@ class Dapati extends React.Component {
         )
     }
 }
-
+//! MainComponent LoggedIn
 class UserPage extends React.Component {
     constructor(props) {
         super(props);
@@ -519,7 +519,7 @@ class UserPage extends React.Component {
         )
     }
 }
-
+//! MainComponent LoggedOut
 class GuestPage extends React.Component {
     constructor(props) {
         super(props);
@@ -634,8 +634,6 @@ function SearchBar(props) {
 
 
 // ----- Components and Functions need to sort
-
-
 
 
 
@@ -1000,8 +998,6 @@ function PostAdForm(props) {
         )
     }
 }
-
-
 function RegistryForm(props) {
     return (
         <form onSubmit={props.onSubmit}>
