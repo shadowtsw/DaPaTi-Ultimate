@@ -232,7 +232,8 @@ class Dapati extends React.Component {
     }
     submitHandler = (eve) => {
         eve.preventDefault();
-
+        let preis = eve.target[5].value.replace(/,/,'.');
+        alert(preis, 'preis')
         const adData = {
             title: eve.target[0].value,
             name: eve.target[1].value,
@@ -798,7 +799,7 @@ function PostAdForm(props) {
                 <div className="field">
                     <label className="label">Preis</label>
                     <div className="control">
-                        <input className="input" type="number" name="price" placeholder="00.00 €" min="0" />
+                        <input className="input" type="number" name="price" placeholder="00.00 €" min="0" step="0.01" />
                     </div>
                 </div>
 
