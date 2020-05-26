@@ -40,7 +40,6 @@ export default class UserPage extends React.Component {
         this.updateRoutineUser();
         this.getAccountInfo();
     };
-
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
             alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
@@ -53,12 +52,13 @@ export default class UserPage extends React.Component {
                 // console.log('res saveAd', res)
                 alert("Anzeige erfolgreich gespeichert")
             })
+            .then(()=>{
+                this.updateRoutineUser()
+            })
             .catch((err) => {
                 console.log('err saveAd', err)
                 alert("Check Log for Details???")
             })
-        this.updateRoutineBasic()
-        this.updateRoutineUser()
     }
     deleteSavedAd(adId) {
         this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, false)
@@ -66,12 +66,13 @@ export default class UserPage extends React.Component {
                 // console.log('res deleteSavedAd', res)
                 alert("Anzeige erfolgreich gelöscht")
             })
+            .then(()=>{
+                this.updateRoutineUser()
+            })
             .catch((err) => {
                 console.log('err deleteSavedAd', err)
                 alert("Check Log for Details")
-            })
-        this.updateRoutineBasic()
-        this.updateRoutineUser()
+            })        
     }
     editAd(id) {
         this.setState({
@@ -79,6 +80,9 @@ export default class UserPage extends React.Component {
         })
         this.setState({
             activeTab: "Anzeige bearbeiten"
+        })
+        .then(()=>{
+            this.updateRoutineUser()
         })
     }
     messageHandler(eve) {
@@ -144,7 +148,7 @@ export default class UserPage extends React.Component {
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(ad) => { this.writeMessage(ad) }} /> </div>],
-        ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3>{this.state.messages}</div>],
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3><DisplayBox origin="Message Center" ads={this.state.messages}/></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
@@ -162,7 +166,7 @@ export default class UserPage extends React.Component {
             <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
             <div className="tabs is-medium is-boxed is-centered">
                 <ul>
-                    <li className={this.state.activeTab === "Übersicht" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Übersicht</a>
+                    <li className={this.state.activeTab === "Übersicht" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve); this.updateRoutineBasic() }}><a href="#!">Übersicht</a>
                     </li>
                     <li className={this.state.activeTab === "Eigene Anzeigen" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Eigene Anzeigen</a>
                     </li>

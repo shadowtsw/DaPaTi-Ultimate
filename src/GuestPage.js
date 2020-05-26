@@ -91,7 +91,7 @@ export default class GuestPage extends React.Component {
 
                 <div className="tabs is-medium is-boxed is-centered">
                     <ul>
-                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Übersicht</a>
+                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve); this.updateRoutineBasic() }}><a href="#!">Übersicht</a>
                         </li>
                         {sucheErgebnis}
                         <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Anzeige Aufgeben</a>

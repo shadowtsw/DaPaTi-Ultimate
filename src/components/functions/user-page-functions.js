@@ -54,6 +54,9 @@ function getAccountInfo() {
             userInfo: res
         })
     })
+    this.setState({
+        lastEdit: new Date()
+    })
 }
 //? Used by UserPage
 function deleteCreatedAd(adId) {
@@ -61,6 +64,9 @@ function deleteCreatedAd(adId) {
         .then((res) => {
             console.log('res deleteSavedAd', res)
             alert("Anzeige erfolgreich gelöscht")
+        })
+        .then(()=>{
+            this.updateRoutineUser()
         })
         .catch((err) => {
             console.log('err deleteSavedAd', err)
@@ -75,10 +81,12 @@ function patchCreatedAd(adId) {
             console.log('res patchData', res)
             alert("Anzeige erfolgreich geändert")
         })
+        .then(()=>{
+            this.updateRoutineUser()
+        })
         .catch((err) => {
             console.log('err patchData', err)
             alert("Check Log for Details")
         })
-    this.updateRoutineUser()
 }
 export { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser }

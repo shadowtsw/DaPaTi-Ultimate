@@ -43,7 +43,21 @@ function DisplayBox(props) {
                 </div>
             </section>
         )
+    } else if (props.origin === "Message Center") {
+        return (
+            <section className="section">
+                <div className="hero-body">
+                    {props.ads && [...props.ads.values()].map(ad => <Test key={ad.id} ad={ad}/>)}
+                </div>
+            </section>
+        )
     }
+}
+
+function Test(props){
+    return (
+        <p>{props.ad.text}</p>
+    )
 }
 
 export default DisplayBox;

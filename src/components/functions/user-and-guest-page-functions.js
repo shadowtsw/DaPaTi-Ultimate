@@ -48,10 +48,14 @@ function searchFunction(eve) {
             })
             this.setState({ searchedAds: sortedAds })
         })
+        .then(()=>{
+            this.updateRoutineUser()
+        })
         .catch((err) => {
             console.log('err', err)
         })
     this.setState({ activeTab: "Suche Ergebnis" })
+
 }
 //? Used by UserPage and GuestPage
 function updateRoutineBasic() {
