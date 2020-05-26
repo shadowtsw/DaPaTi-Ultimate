@@ -15,13 +15,13 @@ import { userLogin, apiAccessGet, apiAccessPost, apiAccessPatch, apiAccessDelete
 // * Regular methods implemented by responsible class
 
 //? Used by UserPage and GuestPage
-function changeTab(eve, add="") {
+function changeTab(eve, add = "") {
     console.log(eve.target.textContent)
-    if (add===""){
+    if (add === "") {
         this.setState({
             activeTab: eve.target.textContent
         })
-    }else{
+    } else {
         this.setState({
             activeTab: add
         })
@@ -63,7 +63,7 @@ function searchFunction(eve) {
         .catch((err) => {
             console.log('err', err)
         })
-    this.setState({activeTab: "Suche Ergebnis"})
+    this.setState({ activeTab: "Suche Ergebnis" })
 }
 //? Used by UserPage and GuestPage
 function updateRoutineBasic() {
@@ -103,28 +103,28 @@ function getAccountInfo() {
     })
 }
 //? Used by UserPage
-function deleteCreatedAd(adId){
-    this.props.deleteData(`ad/${adId}`, this.props.token, {id: adId})
-    .then((res)=>{
-        console.log('res deleteSavedAd', res)
-        alert("Anzeige erfolgreich gelöscht")
-    })
-    .catch((err) => {
-        console.log('err deleteSavedAd', err)
-        alert("Check Log for Details")
-    })
+function deleteCreatedAd(adId) {
+    this.props.deleteData(`ad/${adId}`, this.props.token, { id: adId })
+        .then((res) => {
+            console.log('res deleteSavedAd', res)
+            alert("Anzeige erfolgreich gelöscht")
+        })
+        .catch((err) => {
+            console.log('err deleteSavedAd', err)
+            alert("Check Log for Details")
+        })
 }
 //? Used by UserPage
-function patchCreatedAd(adId){
-    this.props.patchData(`ad/${adId}`, this.props.token, {id: adId})
-    .then((res)=>{
-        console.log('res patchData', res)
-        alert("Anzeige erfolgreich geändert")
-    })
-    .catch((err) => {
-        console.log('err patchData', err)
-        alert("Check Log for Details")
-    })
+function patchCreatedAd(adId) {
+    this.props.patchData(`ad/${adId}`, this.props.token, { id: adId })
+        .then((res) => {
+            console.log('res patchData', res)
+            alert("Anzeige erfolgreich geändert")
+        })
+        .catch((err) => {
+            console.log('err patchData', err)
+            alert("Check Log for Details")
+        })
 }
 // * End
 
@@ -383,16 +383,16 @@ class UserPage extends React.Component {
             })
         this.updateRoutineUser()
     }
-    deleteSavedAd(adId){
-        this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, {id: adId})
-        .then((res)=>{
-            console.log('res deleteSavedAd', res)
-            alert("Anzeige erfolgreich gelöscht")
-        })
-        .catch((err) => {
-            console.log('err deleteSavedAd', err)
-            alert("Check Log for Details")
-        })
+    deleteSavedAd(adId) {
+        this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, { id: adId })
+            .then((res) => {
+                console.log('res deleteSavedAd', res)
+                alert("Anzeige erfolgreich gelöscht")
+            })
+            .catch((err) => {
+                console.log('err deleteSavedAd', err)
+                alert("Check Log for Details")
+            })
         this.updateRoutineUser()
     }
 
@@ -417,32 +417,33 @@ class UserPage extends React.Component {
                 </li>
         }
 
-        return (
-            <>  <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
-                <div className="tabs is-medium is-boxed is-centered">
-                    <ul>
-                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
-                        </li>
-                        {sucheErgebnis}
-                        <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige aufgeben</a>
-                        </li>
-                        <li className={this.state.activeTab === "Eigene Anzeigen" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Eigene Anzeigen</a>
-                        </li>
-                        <li className={this.state.activeTab === "Gespeicherte Anzeigen" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}>
-                            <a>Gespeicherte Anzeigen</a>
-                        </li>
-                        <li className={this.state.activeTab === "Message Center" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}>
-                            <a>Message Center</a>
-                        </li>
-                        <li className={this.state.activeTab === "Account-Info" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}>
-                            <a>Account-Info</a>
-                        </li>
-                    </ul>
-                </div>
-                <main>
-                    {maincontent}
-                </main>
-            </>
+        return (<>
+
+            <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
+            <div className="tabs is-medium is-boxed is-centered">
+                <ul>
+                    <li className={this.state.activeTab === "Übersicht" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Übersicht</a>
+                    </li>
+                    <li className={this.state.activeTab === "Eigene Anzeigen" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Eigene Anzeigen</a>
+                    </li>
+                    {sucheErgebnis}
+                    <li className={this.state.activeTab === "Anzeige Aufgeben" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}><a href="#!" >Anzeige Aufgeben</a>
+                    </li>
+                    <li className={this.state.activeTab === "Gespeicherte Anzeigen" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
+                        <a href="#!">Gespeicherte Anzeigen</a>
+                    </li>
+                    <li className={this.state.activeTab === "Message Center" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
+                        <a href="#!">Message Center</a>
+                    </li>
+                    <li className={this.state.activeTab === "Account-Info" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
+                        <a href="#!">Account-Info</a>
+                    </li>
+                </ul>
+            </div>
+            <main>
+                {maincontent}
+            </main>
+        </>
         )
     }
 }
@@ -540,7 +541,7 @@ class GuestPage extends React.Component {
                         {sucheErgebnis}
                         <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige Aufgeben</a>
                         </li>
-                        <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Registrieren</a>
+                        <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href='#!'>Registrieren</a>
                         </li>
                     </ul>
                 </div>
@@ -578,11 +579,11 @@ function SingleAd(props) {
     let button;
     if (props.token) {
         if (props.savedAds.get(props.singleAd.id)) {
-            button = 
-            <>
-            <button className="button is-info is-light is-small"> ! Bereits Gespeichert !</button><br/>
-            <button className="button is-danger"> Anzeige aus Merkliste löschen</button>
-            </>
+            button =
+                <>
+                    <button className="button is-info is-light is-small"> ! Bereits Gespeichert !</button><br />
+                    <button className="button is-danger"> Anzeige aus Merkliste löschen</button>
+                </>
 
         } else {
             button = <button className="button is-success" onClick={props.saveAd}>Anzeige speichern</button>
