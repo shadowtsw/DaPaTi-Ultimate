@@ -7,8 +7,9 @@ export default function SingleAd(props) {
         if (props.singleAd.id && props.savedAds.get(props.singleAd.id)) {
             button =
                 <>
-                    <button className="button is-info is-light is-small"> ! Bereits Gespeichert !</button><br />
                     <button className="button is-danger" onClick={() => { props.deleteSavedAd(props.singleAd.id) }}> Anzeige aus Merkliste löschen</button>
+                    <br />
+                    <div className="box has-background-success is-small"> ! Bereits Gespeichert !</div>
                 </>
 
         } else {

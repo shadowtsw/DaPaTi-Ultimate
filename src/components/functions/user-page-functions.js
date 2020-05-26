@@ -25,10 +25,6 @@ function updateRoutineUser() {
         .catch((err)=>{
             console.log(err)
         })
-    this.props.getData("user/me/conversations", this.props.token)
-        .then((res) => {
-            this.setState({ messageCenter: res })
-        })
     this.setState({
         lastEdit: new Date()
     })
@@ -46,7 +42,7 @@ function deleteCreatedAd(adId) {
     this.props.deleteData(`ad/${adId}`, this.props.token, false)
         .then((res) => {
             console.log('res deleteSavedAd', res)
-            alert("Anzeige erfolgreich gelöscht")
+            // alert("Anzeige erfolgreich gelöscht")
         })
         .catch((err) => {
             console.log('err deleteSavedAd', err)

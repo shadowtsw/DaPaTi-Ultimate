@@ -9,7 +9,7 @@ function DisplayBox(props) {
         title = "DaPaTi Anzeigen";
         return (
 
-            <section className="section has-background-light">
+            <section className="section has-background-light box">
                 <h1 className="title has-text-centered">{title}</h1>
                 <div className="hero-body">
                     {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} selectAd={(id) => { props.selectAd(id) }} deleteSavedAd={(id) => { props.deleteSavedAd(id) }} />)}

@@ -8,7 +8,7 @@ import {selectAd, updateRoutineBasic, searchFunction, changeTab} from './compone
 import {patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser} from './components/functions/user-page-functions';
 
 //! MainComponent LoggedIn
-export default class UserPage extends React.Component {
+export default class UserPage extends React.PureComponent {
     constructor(props) {
         super(props);
         this.changeTab = changeTab.bind(this);
@@ -24,7 +24,6 @@ export default class UserPage extends React.Component {
             savedAds: null,
             searchedAds: null,
             userAds: null,
-            messageCenter: null,
             sortedAd: null,
             singleAd: null,
             userInfo: {
@@ -42,7 +41,7 @@ export default class UserPage extends React.Component {
 
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
-            alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
+            // alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
             this.updateRoutineBasic()
             this.updateRoutineUser()
             return;
@@ -50,7 +49,8 @@ export default class UserPage extends React.Component {
         this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, "")
             .then((res) => {
                 // console.log('res saveAd', res)
-                alert("Anzeige erfolgreich gespeichert")
+                // alert("Anzeige erfolgreich gespeichert")
+                console.log('ad saved')
             })
             .catch((err) => {
                 console.log('err saveAd', err)
@@ -63,7 +63,7 @@ export default class UserPage extends React.Component {
         this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, false)
             .then((res) => {
                 // console.log('res deleteSavedAd', res)
-                alert("Anzeige erfolgreich gelöscht")
+                // alert("Anzeige erfolgreich gelöscht")
             })
             .catch((err) => {
                 console.log('err deleteSavedAd', err)
@@ -88,10 +88,9 @@ export default class UserPage extends React.Component {
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
-            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
+            ["Eigene Anzeigen", <div className="box has-background-light has-text-centered"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light has-text-centered"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
+            ["Account-Info", <div className="box has-background-light has-text-centered"><h3 className="title">Account-Info</h3><div className="box"><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
         ])
@@ -117,9 +116,6 @@ export default class UserPage extends React.Component {
                     </li>
                     <li className={this.state.activeTab === "Gespeicherte Anzeigen" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
                         <a href="#!">Gespeicherte Anzeigen</a>
-                    </li>
-                    <li className={this.state.activeTab === "Message Center" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
-                        <a href="#!">Message Center</a>
                     </li>
                     <li className={this.state.activeTab === "Account-Info" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve) }}>
                         <a href="#!">Account-Info</a>
