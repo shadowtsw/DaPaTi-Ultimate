@@ -81,7 +81,7 @@ export default class GuestPage extends React.Component {
 
         if (this.state.searchedAds) {
             sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis {`(${this.state.searchedAds.length})`}</a>
+                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis</a>
                 </li>
         }
 

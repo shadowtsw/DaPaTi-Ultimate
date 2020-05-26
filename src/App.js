@@ -1,5 +1,5 @@
 import React from 'react';
-import Dapati from './dapati';
+import Dapati from './Dapati';
 
 function App() {
   return (
