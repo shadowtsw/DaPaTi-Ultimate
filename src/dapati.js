@@ -8,15 +8,16 @@ import React from 'react';
 // import API from './API/fetch_methods';
 import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
-import { useState } from 'react';
+// import { useState } from 'react';
 import { userLogin, apiAccessGet, apiAccessPost, apiAccessPatch, apiAccessDelete } from './API/fetch_methods'
+import Footer from './components/Footer';
 // var Perf = require('react-addons-perf'); // ES5 with npm
 
 // * Regular methods implemented by responsible class
 
 //? Used by UserPage and GuestPage
 function changeTab(eve, add = "") {
-    console.log(eve.target.textContent)
+    // console.log(eve.target.textContent)
     if (add === "") {
         this.setState({
             activeTab: eve.target.textContent
@@ -30,7 +31,7 @@ function changeTab(eve, add = "") {
 //? Used by UserPage and GuestPage
 function searchFunction(eve) {
     eve.preventDefault();
-    console.log(eve.target)
+    // console.log(eve.target)
 
     let suchbegriffOrt;
     let suchbegriffTitel;
@@ -57,7 +58,7 @@ function searchFunction(eve) {
 
     this.props.getData(`ad/?filter=${filterParam}`)
         .then((res) => {
-            console.log(res)
+            // console.log(res)
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
@@ -87,6 +88,16 @@ function updateRoutineBasic() {
 }
 //? Used by UserPage only
 function updateRoutineUser() {
+
+    const filterParam = encodeURIComponent(JSON.stringify({ offset: 0, where: { userId: this.props.id } }));
+    this.props.getData("ad?filter=" + filterParam, this.props.token)
+        .then((res) => {
+            let userAds = new Map();
+            res.forEach((article) => {
+                userAds.set(article.id, article)
+            })
+            this.setState({ userAds: userAds })
+        })
 
     this.props.getData("user/me/saved-ad", this.props.token)
         .then((res) => {
@@ -140,7 +151,7 @@ function patchCreatedAd(adId) {
 }
 //? Used by UserPage and GuestPage
 function selectAd(id, origin = "") {
-    console.log(id)
+    // console.log(id)
     if (origin === "Suche Ergebnis") {
         this.setState({
             singleAd: this.state.searchedAds.get(id)
@@ -281,18 +292,18 @@ class Dapati extends React.Component {
         }
 
         if (this.state.tokenAvailable === true) {
-            console.log(this.state.token);
-            console.log(typeof (this.state.token))
+            // console.log(this.state.token);
+            // console.log(typeof (this.state.token))
             this.postData('user/me/ad', this.state.token, adDataUser)
                 .then((res) => {
                     console.log('mit token', res)
-                    this.postData(`user/me/saved-ad/${res.id}`, this.state.token, { id: res.id })
-                        .then((ress) => {
-                            console.log('save-ad-response', ress)
-                        })
-                        .catch((err) => {
-                            console.log('save-ad-error', err)
-                        })
+                    // this.postData(`user/me/saved-ad/${res.id}`, this.state.token, { id: res.id })
+                    //     .then((ress) => {
+                    //         console.log('save-ad-response', ress)
+                    //     })
+                    //     .catch((err) => {
+                    //         console.log('save-ad-error', err)
+                    //     })
                 })
                 .catch((err) => {
                     console.log('mit-token', err)
@@ -300,7 +311,7 @@ class Dapati extends React.Component {
         }
         else {
             this.postData('ad', this.state.token, adData).then((res) => {
-                console.log('else ohne token', res)
+                // console.log('else ohne token', res)
             });
         }
         alert(`Your ad "${adData.title}" has been successfully posted!`)
@@ -377,6 +388,7 @@ class Dapati extends React.Component {
                 <Header name={this.state.name} />
                 {userNav}
                 {maincontent}
+                <Footer />
             </>
         )
     }
@@ -397,6 +409,7 @@ class UserPage extends React.Component {
             activeTab: "Übersicht",
             savedAds: null,
             searchedAds: null,
+            userAds: null,
             messageCenter: null,
             sortedAd: null,
             singleAd: null,
@@ -422,12 +435,12 @@ class UserPage extends React.Component {
         }
         this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, { id: this.state.singleAd.id })
             .then((res) => {
-                console.log('res saveAd', res)
+                // console.log('res saveAd', res)
                 alert("Anzeige erfolgreich gespeichert")
             })
             .catch((err) => {
                 console.log('err saveAd', err)
-                alert("Check Log for Details")
+                alert("Check Log for Details???")
             })
         this.updateRoutineBasic()
         this.updateRoutineUser()
@@ -435,7 +448,7 @@ class UserPage extends React.Component {
     deleteSavedAd(adId) {
         this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, { id: adId })
             .then((res) => {
-                console.log('res deleteSavedAd', res)
+                // console.log('res deleteSavedAd', res)
                 alert("Anzeige erfolgreich gelöscht")
             })
             .catch((err) => {
@@ -445,13 +458,13 @@ class UserPage extends React.Component {
         this.updateRoutineBasic()
         this.updateRoutineUser()
     }
-    editAd(id){
+    editAd(id) {
         this.setState({
-            editAd: this.state.savedAds.get(id)
+            editAd: this.state.userAds.get(id)
         })
         this.setState({
             activeTab: "Anzeige bearbeiten"
-        })        
+        })
     }
 
     render() {
@@ -461,7 +474,7 @@ class UserPage extends React.Component {
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }}/> </div>],
+            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
@@ -527,7 +540,7 @@ class GuestPage extends React.Component {
 
     register(eve) {
         eve.preventDefault();
-        console.log(eve.target)
+        // console.log(eve.target)
         let body = {
             name: eve.target[0].value,
             email: eve.target[1].value,
@@ -566,7 +579,7 @@ class GuestPage extends React.Component {
         let content = new Map([
             ['Übersicht', <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
-            ['Anzeige Aufgeben', <PostAdForm name={"Gast"} submitHandler={this.props.submitHandler} />],
+            ['Anzeige Aufgeben', <PostAdForm new={true} name={"Gast"} submitHandler={this.props.submitHandler} />],
             ['Registrieren', <RegistryForm onSubmit={(eve) => { this.register(eve) }} />],
             ['Registrieren Erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
             ['Registrieren Fehlgeschlagen', <RegistryFail />],
@@ -672,7 +685,7 @@ function SingleAd(props) {
 }
 
 function RegistrySuccess(props) {
-    console.log(props)
+    // console.log(props)
     return (
         <>
             <h3>Registrierung erfolgreich</h3>
@@ -805,7 +818,7 @@ function SavedAd(props) {
                     <p><b>Ansprechpartner:</b> {props.ad.name}</p>
                     <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
                 </div>
-                <button className="button is-warning" onClick={()=>{props.editAd(props.ad.id)}}>Anzeige bearbeiten</button>
+                <button className="button is-warning" onClick={() => { props.editAd(props.ad.id) }}>Anzeige bearbeiten</button>
                 <button className="button is-danger" onClick={() => { props.deleteCreatedAd(props.ad.id) }}>Anzeige löschen</button>
                 <p>{props.meineId}</p>
             </article>
@@ -967,7 +980,7 @@ function PostAdForm(props) {
                     <div className="field">
                         <label className="label">Deine Anzeigen-ID</label>
                         <div className="control">
-                            <input className="input" type="string" name="id" value={props.editAd.id}/>
+                            <input className="input" type="string" name="id" value={props.editAd.id} />
                         </div>
                     </div>
 
@@ -980,10 +993,14 @@ function PostAdForm(props) {
                         </div>
                     </div>
                 </div>
+
+                <br />
+                <br />
             </form>
         )
     }
 }
+
 
 function RegistryForm(props) {
     return (

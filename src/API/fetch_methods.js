@@ -76,7 +76,7 @@ export async function apiAccessPost(url = "", endpoint = "", implementMethod = "
             body: JSON.stringify(data)
         });
     }
-
+    // console.log(response.json(), 'resp JSON')
     return response.json();
 }
 
