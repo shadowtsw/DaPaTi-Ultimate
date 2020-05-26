@@ -12,7 +12,8 @@ export async function userLogin(url = "", data = {}) {
     });
 
 
-    return response.json();
+    return response.json()
+    
 }
 export async function apiAccessGet(url = "", endpoint = "", implementMethod = "", token = "") {
 
@@ -28,6 +29,7 @@ export async function apiAccessGet(url = "", endpoint = "", implementMethod = ""
             },
             // body: data
         });
+        return response.json()
     }
     else if (implementMethod === "GET" && token !== "") {
         response = await fetch(url, {
@@ -38,6 +40,7 @@ export async function apiAccessGet(url = "", endpoint = "", implementMethod = ""
             },
             // body: data
         });
+        return response.json()
     }
     // else if (implementMethod === "GET" && token !== ""){
 
@@ -47,8 +50,7 @@ export async function apiAccessGet(url = "", endpoint = "", implementMethod = ""
     // if (data !== {}) {
     //     data = JSON.stringify(data)
     // }
-
-    return response.json();
+    // return response.json()
 }
 
 export async function apiAccessPost(url = "", endpoint = "", implementMethod = "", token = "", data = {}) {
@@ -57,7 +59,7 @@ export async function apiAccessPost(url = "", endpoint = "", implementMethod = "
 
     let response;
 
-    if (implementMethod === "POST" && token === "") {
+    if (implementMethod === "POST" && token === "" && data !== "") {
         response = await fetch(url, {
             method: implementMethod,
             headers: {
@@ -65,8 +67,9 @@ export async function apiAccessPost(url = "", endpoint = "", implementMethod = "
             },
             body: JSON.stringify(data)
         });
+        return response.json()
     }
-    else if (implementMethod === "POST" && token !== "") {
+    else if (implementMethod === "POST" && token !== "" && data !== "") {
         response = await fetch(url, {
             method: implementMethod,
             headers: {
@@ -75,18 +78,30 @@ export async function apiAccessPost(url = "", endpoint = "", implementMethod = "
             },
             body: JSON.stringify(data)
         });
+        return response.json()
+    }
+    else if (implementMethod === "POST" && token !== "" && data === "") {
+        response = await fetch(url, {
+            method: implementMethod,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+            // body: JSON.stringify(data)
+        });
+        return response
     }
     // console.log(response.json(), 'resp JSON')
-    return response.json();
+    
 }
 
-export async function apiAccessPatch(url = "", endpoint = "", implementMethod = "", token = "", data = {}) {
+export async function apiAccessPatch(url = "", endpoint = "", implementMethod = "", token = "", data = {}, json=true) {
 
     url += endpoint;
 
     let response;
 
-    if (implementMethod === "PATCH" && token === "") {
+    if (implementMethod === "PATCH" && token === "" && json===true) {
         response = await fetch(url, {
             method: implementMethod,
             headers: {
@@ -94,8 +109,9 @@ export async function apiAccessPatch(url = "", endpoint = "", implementMethod = 
             },
             body: JSON.stringify(data)
         });
+        return response.json()
     }
-    else if (implementMethod === "PATCH" && token !== "") {
+    else if (implementMethod === "PATCH" && token !== "" && json===true) {
         response = await fetch(url, {
             method: implementMethod,
             headers: {
@@ -104,26 +120,38 @@ export async function apiAccessPatch(url = "", endpoint = "", implementMethod = 
             },
             body: JSON.stringify(data)
         });
+        return response.json()
     }
-
-    return response.json();
+    else if (implementMethod === "PATCH" && token !== "" && json===false) {
+        response = await fetch(url, {
+            method: implementMethod,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+        return response
+    }
+    
 }
 
-export async function apiAccessDelete(url = "", endpoint = "", implementMethod = "", token = "") {
+export async function apiAccessDelete(url = "", endpoint = "", implementMethod = "", token = "", json=true) {
 
     url += endpoint;
 
     let response;
 
-    if (implementMethod === "DELETE" && token === "") {
+    if (implementMethod === "DELETE" && token === "" && json===true) {
         response = await fetch(url, {
             method: implementMethod,
             headers: {
                 'Content-Type': 'application/json',
             },
         });
+        return response.json()
     }
-    else if (implementMethod === "DELETE" && token !== "") {
+    else if (implementMethod === "DELETE" && token !== "" && json===true) {
         response = await fetch(url, {
             method: implementMethod,
             headers: {
@@ -131,9 +159,30 @@ export async function apiAccessDelete(url = "", endpoint = "", implementMethod =
                 'Authorization': `Bearer ${token}`
             },
         });
+        return response.json()
+    }
+    else if (implementMethod === "DELETE" && token === "" && json===false) {
+        response = await fetch(url, {
+            method: implementMethod,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        return response
+    }
+    else if (implementMethod === "DELETE" && token !== "" && json===false) {
+        response = await fetch(url, {
+            method: implementMethod,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        return response
     }
 
-    return response.json();
+    // return response.json()
 }
 
 export default {userLogin,apiAccessGet,apiAccessPost,apiAccessPatch,apiAccessDelete}

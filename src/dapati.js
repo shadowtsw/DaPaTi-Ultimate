@@ -82,6 +82,9 @@ function updateRoutineBasic() {
             })
             this.setState({ sortedAd: sortedAds })
         })
+        .catch((err)=>{
+            console.log(err)
+        })
     this.setState({
         lastEdit: new Date()
     })
@@ -98,6 +101,9 @@ function updateRoutineUser() {
             })
             this.setState({ userAds: userAds })
         })
+        .catch((err)=>{
+            console.log(err)
+        })
 
     this.props.getData("user/me/saved-ad", this.props.token)
         .then((res) => {
@@ -106,6 +112,9 @@ function updateRoutineUser() {
                 sortedAds.set(article.id, article)
             })
             this.setState({ savedAds: sortedAds })
+        })
+        .catch((err)=>{
+            console.log(err)
         })
     this.props.getData("user/me/conversations", this.props.token)
         .then((res) => {
@@ -125,7 +134,7 @@ function getAccountInfo() {
 }
 //? Used by UserPage
 function deleteCreatedAd(adId) {
-    this.props.deleteData(`ad/${adId}`, this.props.token, { id: adId })
+    this.props.deleteData(`ad/${adId}`, this.props.token, false)
         .then((res) => {
             console.log('res deleteSavedAd', res)
             alert("Anzeige erfolgreich gelöscht")
@@ -138,7 +147,7 @@ function deleteCreatedAd(adId) {
 }
 //? Used by UserPage
 function patchCreatedAd(adId) {
-    this.props.patchData(`ad/${adId}`, this.props.token, { id: adId })
+    this.props.patchData(`ad/${adId}`, this.props.token, { id: adId }, false)
         .then((res) => {
             console.log('res patchData', res)
             alert("Anzeige erfolgreich geändert")
@@ -203,11 +212,11 @@ class Dapati extends React.Component {
     postData = (endpoint, token, body = {}) => {
         return apiAccessPost(this.state.serverUrl, endpoint, "POST", token, body)
     }
-    deleteData = (endpoint, token, body = {}) => {
-        return apiAccessDelete(this.state.serverUrl, endpoint, "DELETE", token, body)
+    deleteData = (endpoint, token, json) => {
+        return apiAccessDelete(this.state.serverUrl, endpoint, "DELETE", token, json)
     }
-    patchData = (endpoint, token, body = {}) => {
-        return apiAccessPatch(this.state.serverUrl, endpoint, "PATCH", token, body)
+    patchData = (endpoint, token, body = {}, json) => {
+        return apiAccessPatch(this.state.serverUrl, endpoint, "PATCH", token, body, json)
     }
 
 
@@ -433,7 +442,7 @@ class UserPage extends React.Component {
             this.updateRoutineUser()
             return;
         }
-        this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, { id: this.state.singleAd.id })
+        this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, "")
             .then((res) => {
                 // console.log('res saveAd', res)
                 alert("Anzeige erfolgreich gespeichert")
@@ -446,7 +455,7 @@ class UserPage extends React.Component {
         this.updateRoutineUser()
     }
     deleteSavedAd(adId) {
-        this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, { id: adId })
+        this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, false)
             .then((res) => {
                 // console.log('res deleteSavedAd', res)
                 alert("Anzeige erfolgreich gelöscht")
