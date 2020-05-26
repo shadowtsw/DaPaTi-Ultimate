@@ -411,7 +411,9 @@ class UserPage extends React.Component {
         maincontent = content.get(this.state.activeTab)
 
         if (this.state.searchedAds) {
-                sucheErgebnis = <li className={this.state.activeTab === "Suche Ergebnis" && "is-active"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a></li>
+            sucheErgebnis =
+                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined } onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis ({this.state.searchedAds.length})</a>
+                </li>
         }
 
         return (<>
@@ -522,7 +524,9 @@ class GuestPage extends React.Component {
         maincontent = content.get(this.state.activeTab);
 
         if (this.state.searchedAds) {
-            sucheErgebnis = <li className={this.state.activeTab === "Suche Ergebnis" && "is-active"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a></li>
+            sucheErgebnis =
+                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis ({this.state.searchedAds.length})</a>
+                </li>
         }
 
         return (
@@ -531,10 +535,10 @@ class GuestPage extends React.Component {
 
                 <div className="tabs is-medium is-boxed is-centered">
                     <ul>
-                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Übersicht</a>
+                        <li className={this.state.activeTab === "Übersicht" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Übersicht</a>
                         </li>
                         {sucheErgebnis}
-                        <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a>Anzeige Aufgeben</a>
+                        <li className={this.state.activeTab === "Anzeige Aufgeben" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href="#!">Anzeige Aufgeben</a>
                         </li>
                         <li className={this.state.activeTab === "Registrieren" && 'is-active'} onClick={(eve) => { this.changeTab(eve) }}><a href='#!'>Registrieren</a>
                         </li>
