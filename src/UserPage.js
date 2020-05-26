@@ -123,6 +123,18 @@ export default class UserPage extends React.Component {
             })
     }
 
+    // updateMessages(){
+    //     this.messageCenter.forEach((conversation)=>{
+    //         this.props.getData(`/ad/${conversation.adId}/message/${conversation.userId}`, this.props.token)
+    //         .then((res)=>{
+    //             this.messages.set(conversation.adId, res)
+    //         })
+    //         .catch((err)=>{
+    //             console.log(err)
+    //         })
+    //     })
+    // }
+
     render() {
         let maincontent;
         let sucheErgebnis;
