@@ -10,7 +10,7 @@ function updateRoutineUser() {
             })
             this.setState({ userAds: userAds })
         })
-        .catch((err)=>{
+        .catch((err) => {
             console.log(err)
         })
 
@@ -22,12 +22,26 @@ function updateRoutineUser() {
             })
             this.setState({ savedAds: sortedAds })
         })
-        .catch((err)=>{
+        .catch((err) => {
             console.log(err)
         })
     this.props.getData("user/me/conversations", this.props.token)
-        .then((res) => {
-            this.setState({ messageCenter: res })
+        .then((resss) => {
+            this.setState({ messageCenter: resss })
+            let newMap = new Map();
+            this.state.messageCenter.forEach((conversation) => {
+                this.props.getData(`/ad/${conversation.adId}/message/${conversation.userId}`, this.props.token)
+                    .then((res) => {
+                        newMap.set(conversation.adId, res)
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            })
+            this.setState({messages: newMap})
+        })
+        .catch((err)=>{
+            console.log(err)
         })
     this.setState({
         lastEdit: new Date()
@@ -67,4 +81,4 @@ function patchCreatedAd(adId) {
         })
     this.updateRoutineUser()
 }
- export {patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser}
+export { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser }
