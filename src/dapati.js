@@ -131,6 +131,22 @@ function patchCreatedAd(adId) {
             alert("Check Log for Details")
         })
 }
+//? Used by UserPage and GuestPage
+function selectAd(id, origin="") {
+    console.log(id)
+    if (origin === "Suche Ergebnis") {
+        this.setState({
+            singleAd: this.state.searchedAds.get(id)
+        })
+    } else {
+        this.setState({
+            singleAd: this.state.sortedAd.get(id)
+        })
+    }
+    this.setState({
+        activeTab: "Einzelartikel"
+    })
+}
 // * End
 
 
@@ -338,8 +354,9 @@ class UserPage extends React.Component {
         this.updateRoutineBasic = updateRoutineBasic.bind(this);
         this.updateRoutineUser = updateRoutineUser.bind(this);
         this.getAccountInfo = getAccountInfo.bind(this);
-        this.deleteCreatedAd = deleteCreatedAd.bind(this)
-        this.patchCreatedAd = patchCreatedAd.bind(this)
+        this.deleteCreatedAd = deleteCreatedAd.bind(this);
+        this.patchCreatedAd = patchCreatedAd.bind(this);
+        this.selectAd = selectAd.bind(this);
         this.state = {
             activeTab: "Übersicht",
             savedAds: null,
@@ -359,22 +376,6 @@ class UserPage extends React.Component {
         this.updateRoutineUser();
         this.getAccountInfo();
     };
-
-    selectAd(id, origin="") {
-        console.log(id)
-        if (origin === "Suche Ergebnis") {
-            this.setState({
-                singleAd: this.state.searchedAds.get(id)
-            })
-        } else {
-            this.setState({
-                singleAd: this.state.sortedAd.get(id)
-            })
-        }
-        this.setState({
-            activeTab: "Einzelartikel"
-        })
-    }
 
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
@@ -414,7 +415,7 @@ class UserPage extends React.Component {
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" /></div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id}/></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} />]
@@ -464,6 +465,7 @@ class GuestPage extends React.Component {
         this.changeTab = changeTab.bind(this);
         this.searchFunction = searchFunction.bind(this);
         this.updateRoutineBasic = updateRoutineBasic.bind(this);
+        this.selectAd = selectAd.bind(this);
         this.state = {
             activeTab: "Übersicht",
             sortedAd: null,
@@ -508,21 +510,6 @@ class GuestPage extends React.Component {
                     activeTab: "Registrieren Fehlgeschlagen"
                 })
             })
-    }
-    selectAd(id, origin="") {
-        console.log(id)
-        if (origin === "Suche Ergebnis") {
-            this.setState({
-                singleAd: this.state.searchedAds.get(id)
-            })
-        } else {
-            this.setState({
-                singleAd: this.state.sortedAd.get(id)
-            })
-        }
-        this.setState({
-            activeTab: "Einzelartikel"
-        })
     }
 
     render() {
@@ -730,7 +717,7 @@ function DisplayBox(props) {
         return (
             <section className="section">
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} />)}
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId}/>)}
                 </div>
             </section>
         )
