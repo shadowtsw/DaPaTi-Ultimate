@@ -82,6 +82,9 @@ function updateRoutineBasic() {
             })
             this.setState({ sortedAd: sortedAds })
         })
+    this.setState({
+        lastEdit: new Date()
+    })
 }
 //? Used by UserPage only
 function updateRoutineUser() {
@@ -98,6 +101,9 @@ function updateRoutineUser() {
         .then((res) => {
             this.setState({ messageCenter: res })
         })
+    this.setState({
+        lastEdit: new Date()
+    })
 }
 //? Used by UserPage only
 function getAccountInfo() {
@@ -118,6 +124,7 @@ function deleteCreatedAd(adId) {
             console.log('err deleteSavedAd', err)
             alert("Check Log for Details")
         })
+    this.updateRoutineUser()
 }
 //? Used by UserPage
 function patchCreatedAd(adId) {
@@ -130,10 +137,16 @@ function patchCreatedAd(adId) {
             console.log('err patchData', err)
             alert("Check Log for Details")
         })
+    this.updateRoutineUser()
 }
 //? Used by UserPage and GuestPage
+<<<<<<< HEAD
 function selectAd(id, origin="") {
     // console.log(id)
+=======
+function selectAd(id, origin = "") {
+    console.log(id)
+>>>>>>> 0ada62a7e30e381bd455d21273c504b6d3aa37b5
     if (origin === "Suche Ergebnis") {
         this.setState({
             singleAd: this.state.searchedAds.get(id)
@@ -380,6 +393,7 @@ class UserPage extends React.Component {
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
             alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
+            this.updateRoutineBasic()
             this.updateRoutineUser()
             return;
         }
@@ -392,6 +406,7 @@ class UserPage extends React.Component {
                 console.log('err saveAd', err)
                 alert("Check Log for Details???")
             })
+        this.updateRoutineBasic()
         this.updateRoutineUser()
     }
     deleteSavedAd(adId) {
@@ -404,6 +419,7 @@ class UserPage extends React.Component {
                 console.log('err deleteSavedAd', err)
                 alert("Check Log for Details")
             })
+        this.updateRoutineBasic()
         this.updateRoutineUser()
     }
 
@@ -413,18 +429,27 @@ class UserPage extends React.Component {
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
+<<<<<<< HEAD
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id}/></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3><section className="section has-background-light"><div className='box has-background-white has-text-centered'>You have no current messages</div></section><br/></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p><br /></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} />]
+=======
+            ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
+            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} /> </div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
+            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
+            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />]
+>>>>>>> 0ada62a7e30e381bd455d21273c504b6d3aa37b5
         ])
         maincontent = content.get(this.state.activeTab)
 
         if (this.state.searchedAds) {
             sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined } onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis ({this.state.searchedAds.length})</a>
+                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis ({this.state.searchedAds.length})</a>
                 </li>
         }
 
@@ -585,7 +610,7 @@ function SingleAd(props) {
             button =
                 <>
                     <button className="button is-info is-light is-small"> ! Bereits Gespeichert !</button><br />
-                    <button className="button is-danger"> Anzeige aus Merkliste löschen</button>
+                    <button className="button is-danger" onClick={() => { props.deleteSavedAd(props.singleAd.id) }}> Anzeige aus Merkliste löschen</button>
                 </>
 
         } else {
@@ -698,7 +723,7 @@ function DisplayBox(props) {
             <section className="section has-background-light">
                 <h1 className="title has-text-centered">{title}</h1>
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} selectAd={(id) => { props.selectAd(id) }} />)}
+                    {props.ads && [...props.ads.values()].map(ad => <Ad key={ad.id} ad={ad} selectAd={(id) => { props.selectAd(id) }} deleteSavedAd={(id) => { props.deleteSavedAd(id) }} />)}
                 </div>
             </section>
         )
@@ -717,7 +742,7 @@ function DisplayBox(props) {
         return (
             <section className="section">
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId}/>)}
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId} deleteSavedAd={(id) => { props.deleteSavedAd(id) }} />)}
                 </div>
             </section>
         )
@@ -725,7 +750,7 @@ function DisplayBox(props) {
         return (
             <section className="section">
                 <div className="hero-body">
-                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId}/>)}
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId} deleteCreatedAd={(id) => { props.deleteCreatedAd(id) }} />)}
                 </div>
             </section>
         )
@@ -736,8 +761,8 @@ function Ad(props) {
 
     return (
         <article className="box column is-three-fifths is-offset-one-fifth">
-            <h3 className="title is-size-4">{(props.ad.title.length>80) ? props.ad.title.substring(0, 80)+'...':props.ad.title}</h3>
-            <p className="content">{(props.ad.description.length>80) ? props.ad.description.substring(0, 80)+'...':props.ad.description}</p>
+            <h3 className="title is-size-4">{(props.ad.title.length > 80) ? props.ad.title.substring(0, 80) + '...' : props.ad.title}</h3>
+            <p className="content">{(props.ad.description.length > 80) ? props.ad.description.substring(0, 80) + '...' : props.ad.description}</p>
             <button className="button is-info" onClick={() => { props.selectAd(props.ad.id) }}>Details</button>
         </article>
     )
@@ -758,7 +783,7 @@ function SavedAd(props) {
                     <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
                 </div>
                 <button className="button is-warning">Anzeige bearbeiten</button>
-                <button className="button is-danger">Anzeige löschen</button>
+                <button className="button is-danger" onClick={() => { props.deleteCreatedAd(props.ad.id) }}>Anzeige löschen</button>
                 <p>{props.meineId}</p>
             </article>
         )
@@ -774,7 +799,7 @@ function SavedAd(props) {
                     <p><b>Ansprechpartner:</b> {props.ad.name}</p>
                     <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
                 </div>
-                <button className="button is-warning">Anzeige aus Merkliste löschen</button>
+                <button className="button is-warning" onClick={() => { props.deleteSavedAd(props.ad.id) }}>Anzeige aus Merkliste löschen</button>
             </article>
         )
     }
