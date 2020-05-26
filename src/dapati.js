@@ -232,8 +232,6 @@ class Dapati extends React.Component {
     }
     submitHandler = (eve) => {
         eve.preventDefault();
-        let preis = eve.target[5].value.replace(/,/,'.');
-        alert(preis, 'preis')
         const adData = {
             title: eve.target[0].value,
             name: eve.target[1].value,
