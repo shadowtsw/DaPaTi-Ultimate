@@ -85,6 +85,16 @@ function updateRoutineBasic() {
 //? Used by UserPage only
 function updateRoutineUser() {
 
+    const filterParam = encodeURIComponent(JSON.stringify({offset: 0, where : {userId: this.props.id}}));
+    this.props.getData("ad?filter="+filterParam, this.props.token)
+        .then((res) => {
+            let userAds = new Map();
+            res.forEach((article) => {
+                userAds.set(article.id, article)
+            })
+            this.setState({ userAds: userAds })
+        })
+
     this.props.getData("user/me/saved-ad", this.props.token)
         .then((res) => {
             let sortedAds = new Map();
@@ -359,6 +369,7 @@ class UserPage extends React.Component {
             activeTab: "Übersicht",
             savedAds: null,
             searchedAds: null,
+            userAds:null,
             messageCenter: null,
             sortedAd: null,
             singleAd: null,
@@ -412,7 +423,7 @@ class UserPage extends React.Component {
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
+            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id}/></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
