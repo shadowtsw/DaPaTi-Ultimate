@@ -1,6 +1,4 @@
-// import React from 'react'
-
-export async function userLogin(url = "", data={}) {
+export async function userLogin(url = "", data = {}) {
 
     const endpoint = "/user/login"
     url += endpoint;
