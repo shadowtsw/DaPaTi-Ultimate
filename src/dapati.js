@@ -17,7 +17,7 @@ import Footer from './components/Footer';
 
 //? Used by UserPage and GuestPage
 function changeTab(eve, add = "") {
-    console.log(eve.target.textContent)
+    // console.log(eve.target.textContent)
     if (add === "") {
         this.setState({
             activeTab: eve.target.textContent
@@ -31,7 +31,7 @@ function changeTab(eve, add = "") {
 //? Used by UserPage and GuestPage
 function searchFunction(eve) {
     eve.preventDefault();
-    console.log(eve.target)
+    // console.log(eve.target)
 
     let suchbegriffOrt;
     let suchbegriffTitel;
@@ -58,7 +58,7 @@ function searchFunction(eve) {
 
     this.props.getData(`ad/?filter=${filterParam}`)
         .then((res) => {
-            console.log(res)
+            // console.log(res)
             let sortedAds = new Map();
             res.forEach((article) => {
                 sortedAds.set(article.id, article)
@@ -133,7 +133,7 @@ function patchCreatedAd(adId) {
 }
 //? Used by UserPage and GuestPage
 function selectAd(id, origin="") {
-    console.log(id)
+    // console.log(id)
     if (origin === "Suche Ergebnis") {
         this.setState({
             singleAd: this.state.searchedAds.get(id)
@@ -274,11 +274,11 @@ class Dapati extends React.Component {
         }
 
         if (this.state.tokenAvailable === true) {
-            console.log(this.state.token);
-            console.log(typeof (this.state.token))
+            // console.log(this.state.token);
+            // console.log(typeof (this.state.token))
             this.postData('user/me/ad', this.state.token, adDataUser)
                 .then((res) => {
-                    console.log('mit token', res)
+                    // console.log('mit token', res)
                     this.postData(`user/me/saved-ad/${res.id}`, this.state.token, { id: res.id })
                         .then((ress) => {
                             console.log('save-ad-response', ress)
@@ -293,7 +293,7 @@ class Dapati extends React.Component {
         }
         else {
             this.postData('ad', this.state.token, adData).then((res) => {
-                console.log('else ohne token', res)
+                // console.log('else ohne token', res)
             });
         }
         alert(`Your ad "${adData.title}" has been successfully posted!`)
@@ -385,19 +385,19 @@ class UserPage extends React.Component {
         }
         this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, { id: this.state.singleAd.id })
             .then((res) => {
-                console.log('res saveAd', res)
+                // console.log('res saveAd', res)
                 alert("Anzeige erfolgreich gespeichert")
             })
             .catch((err) => {
                 console.log('err saveAd', err)
-                alert("Check Log for Details")
+                alert("Check Log for Details???")
             })
         this.updateRoutineUser()
     }
     deleteSavedAd(adId) {
         this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, { id: adId })
             .then((res) => {
-                console.log('res deleteSavedAd', res)
+                // console.log('res deleteSavedAd', res)
                 alert("Anzeige erfolgreich gelöscht")
             })
             .catch((err) => {
@@ -416,8 +416,8 @@ class UserPage extends React.Component {
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id}/></div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
-            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3><section className="section has-background-light"><div className='box has-background-white has-text-centered'>You have no current messages</div></section><br/></div>],
+            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p><br /></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} />]
         ])
         maincontent = content.get(this.state.activeTab)
@@ -479,7 +479,7 @@ class GuestPage extends React.Component {
 
     register(eve) {
         eve.preventDefault();
-        console.log(eve.target)
+        // console.log(eve.target)
         let body = {
             name: eve.target[0].value,
             email: eve.target[1].value,
@@ -624,7 +624,7 @@ function SingleAd(props) {
 }
 
 function RegistrySuccess(props) {
-    console.log(props)
+    // console.log(props)
     return (
         <>
             <h3>Registrierung erfolgreich</h3>
@@ -854,6 +854,8 @@ function PostAdForm(props) {
                     </div>
                 </div>
             </div>
+            <br />
+            <br />
         </form>
     )
 }
