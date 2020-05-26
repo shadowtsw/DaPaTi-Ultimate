@@ -403,8 +403,8 @@ class UserPage extends React.Component {
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id)} />],
-            ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3></div>],
+            ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
+            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" /></div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
@@ -719,6 +719,14 @@ function DisplayBox(props) {
                 </div>
             </section>
         )
+    } else if (props.origin === "Eigene Anzeigen") {
+        return (
+            <section className="section">
+                <div className="hero-body">
+                    {props.ads && [...props.ads.values()].map(ad => <SavedAd key={ad.id} ad={ad} meineId={props.meineId}/>)}
+                </div>
+            </section>
+        )
     }
 }
 
@@ -734,20 +742,40 @@ function Ad(props) {
 }
 
 function SavedAd(props) {
-    return (
-        <article className="box container has-text-centered">
-            <h2 className="title is-size-3"> {props.ad.title}</h2>
-            <p className="subtitle is-size-7"> {new Date(props.ad.createdAt).toLocaleDateString()}</p>
-            <div className="content">
-                <p className="title is-size-5">Beschreibung</p><p>{props.ad.description}</p>
-                <p><b>Email:</b> {props.ad.email}</p>
-                <p><b>Ort:</b> {props.ad.location}</p>
-                <p><b>Ansprechpartner:</b> {props.ad.name}</p>
-                <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
-            </div>
-            <button className="button is-danger">Anzeige aus Merkliste löschen</button>
-        </article>
-    )
+
+    if (props.ad.userId === props.meineId) {
+        return (
+            <article className="box container has-text-centered">
+                <h2 className="title is-size-3"> {props.ad.title}</h2>
+                <p className="subtitle is-size-7"> {new Date(props.ad.createdAt).toLocaleDateString()}</p>
+                <div className="content">
+                    <p className="title is-size-5">Beschreibung</p><p>{props.ad.description}</p>
+                    <p><b>Email:</b> {props.ad.email}</p>
+                    <p><b>Ort:</b> {props.ad.location}</p>
+                    <p><b>Ansprechpartner:</b> {props.ad.name}</p>
+                    <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+                </div>
+                <button className="button is-warning">Anzeige bearbeiten</button>
+                <button className="button is-danger">Anzeige löschen</button>
+                <p>{props.meineId}</p>
+            </article>
+        )
+    } else {
+        return (
+            <article className="box container has-text-centered">
+                <h2 className="title is-size-3"> {props.ad.title}</h2>
+                <p className="subtitle is-size-7"> {new Date(props.ad.createdAt).toLocaleDateString()}</p>
+                <div className="content">
+                    <p className="title is-size-5">Beschreibung</p><p>{props.ad.description}</p>
+                    <p><b>Email:</b> {props.ad.email}</p>
+                    <p><b>Ort:</b> {props.ad.location}</p>
+                    <p><b>Ansprechpartner:</b> {props.ad.name}</p>
+                    <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+                </div>
+                <button className="button is-warning">Anzeige aus Merkliste löschen</button>
+            </article>
+        )
+    }
 }
 // ! Component block sticks together END
 
