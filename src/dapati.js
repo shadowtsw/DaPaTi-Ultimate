@@ -358,15 +358,20 @@ class UserPage extends React.Component {
         this.getAccountInfo();
     };
 
-    selectAd(id) {
+    selectAd(id, origin="") {
         console.log(id)
-        this.setState({
-            singleAd: this.state.sortedAd.get(id)
-        })
+        if (origin === "Suche Ergebnis") {
+            this.setState({
+                singleAd: this.state.searchedAds.get(id)
+            })
+        } else {
+            this.setState({
+                singleAd: this.state.sortedAd.get(id)
+            })
+        }
         this.setState({
             activeTab: "Einzelartikel"
         })
-        this.updateRoutineUser()
     }
 
     saveAd() {
@@ -404,7 +409,7 @@ class UserPage extends React.Component {
         let sucheErgebnis;
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
-            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id)} />],
+            ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" /></div>],
