@@ -10,6 +10,13 @@ function changeTab(eve, add = "") {
             activeTab: add
         })
     }
+    if (this.activeTab === "Übersicht") {
+        this.updateRoutineBasic()
+    }
+    if (this.activeTab === "Eigene Anzeigen" || this.activeTab === "Gespeicherte Anzeigen") {
+        this.updateRoutineBasic()
+        this.updateRoutineUser()
+    }
 }
 //? Used by UserPage and GuestPage
 function searchFunction(eve) {

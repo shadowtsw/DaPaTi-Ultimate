@@ -5,7 +5,7 @@ import PostAdForm from './components/PostAdForm';
 import SingleAd from './components/SingleAd';
 import SearchBar from './components/SearchBar';
 import { selectAd, updateRoutineBasic, searchFunction, changeTab } from './components/functions/user-and-guest-page-functions';
-import { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser } from './components/functions/user-page-functions';
+import { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser, messageUpdater, updateRoutineMessageCenter } from './components/functions/user-page-functions';
 
 //! MainComponent LoggedIn
 export default class UserPage extends React.Component {
@@ -19,6 +19,8 @@ export default class UserPage extends React.Component {
         this.deleteCreatedAd = deleteCreatedAd.bind(this);
         this.patchCreatedAd = patchCreatedAd.bind(this);
         this.selectAd = selectAd.bind(this);
+        this.messageUpdater = messageUpdater.bind(this);
+        this.updateRoutineMessageCenter = updateRoutineMessageCenter.bind(this);
         this.state = {
             activeTab: "Übersicht",
             savedAds: null,
@@ -27,7 +29,7 @@ export default class UserPage extends React.Component {
             messageCenter: null,
             sortedAd: null,
             singleAd: null,
-            messages: null,
+            messages: {},
             userInfo: {
                 id: "",
                 name: "",
@@ -37,8 +39,9 @@ export default class UserPage extends React.Component {
     }
     componentDidMount() {
         this.updateRoutineBasic();
-        this.updateRoutineUser();
+        this.updateRoutineUser()
         this.getAccountInfo();
+        this.updateRoutineMessageCenter();
     };
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
@@ -52,7 +55,7 @@ export default class UserPage extends React.Component {
                 // console.log('res saveAd', res)
                 alert("Anzeige erfolgreich gespeichert")
             })
-            .then(()=>{
+            .then(() => {
                 this.updateRoutineUser()
             })
             .catch((err) => {
@@ -66,13 +69,13 @@ export default class UserPage extends React.Component {
                 // console.log('res deleteSavedAd', res)
                 alert("Anzeige erfolgreich gelöscht")
             })
-            .then(()=>{
+            .then(() => {
                 this.updateRoutineUser()
             })
             .catch((err) => {
                 console.log('err deleteSavedAd', err)
                 alert("Check Log for Details")
-            })        
+            })
     }
     editAd(id) {
         this.setState({
@@ -81,63 +84,42 @@ export default class UserPage extends React.Component {
         this.setState({
             activeTab: "Anzeige bearbeiten"
         })
-        .then(()=>{
-            this.updateRoutineUser()
-        })
     }
-    messageHandler(eve) {
-        this.setState({
-            messageText: eve.target.value
-        })
-    }
-    writeMessage(ad) {
+    sendMessage(eve, adId, userId) {
+        eve.preventDefault();
 
-        console.log(ad)
+        console.log(adId)
+        console.log(userId)
+        console.log(eve.target[0].value)
 
-        // if (!this.state.messages.get(ad.id)) {
-
-        // }
-
-        let newArray
-        let layout =
-            <>
-                <h3>Message Test</h3>
-                <h4>Zu Artikel {ad.title}</h4>
-                <h4>Empfänger {ad.userId}</h4>
-                <h4>Von</h4>
-                <input type="text" name="message" onChange={(eve) => { this.messageHandler(eve) }} />
-                <button onClick={() => { this.sendMessage(ad.id, ad.userId, this.state.messageText) }}>Send</button>
-            </>
-
-        newArray = new Map();
-        newArray.set(ad.id, layout)
-
-        this.setState({
-            messages: newArray
-        })
-
-    }
-    sendMessage(adId, userId, usertext) {
-        this.props.postData(`/ad/${adId}/message/${userId}`, this.props.token, { text: usertext })
+        this.props.postData(`ad/${adId}/message/${userId}/`, this.props.token, { text: eve.target[0].value })
             .then((res) => {
                 console.log(res)
+            })
+            .then(()=>{
+                alert("Nachricht erfolgreich abgeschickt")
+                this.updateRoutineMessageCenter()
             })
             .catch((err) => {
                 console.log(err)
             })
     }
+    writeMessage(adId,userId){
 
-    // updateMessages(){
-    //     this.messageCenter.forEach((conversation)=>{
-    //         this.props.getData(`/ad/${conversation.adId}/message/${conversation.userId}`, this.props.token)
-    //         .then((res)=>{
-    //             this.messages.set(conversation.adId, res)
-    //         })
-    //         .catch((err)=>{
-    //             console.log(err)
-    //         })
-    //     })
-    // }
+        let x = prompt()
+
+        this.props.postData(`ad/${adId}/message/${userId}/`, this.props.token, { text: x })
+            .then((res) => {
+                console.log(res)
+            })
+            .then(()=>{
+                alert("Nachricht erfolgreich abgeschickt")
+                this.updateRoutineMessageCenter()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
     render() {
         let maincontent;
@@ -147,8 +129,8 @@ export default class UserPage extends React.Component {
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(ad) => { this.writeMessage(ad) }} /> </div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3><DisplayBox origin="Message Center" ads={this.state.messages}/></div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(adId,userId) => { this.writeMessage(adId,userId) }} /> </div>],
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3> <MessageBoxWrapper conversation={this.state.messages} sendMessage={(eve, adId, userId)=>this.sendMessage(eve, adId, userId)} /> </div>], //<DisplayBox origin="Message Center" ads={this.state.messages}/>
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
@@ -157,13 +139,14 @@ export default class UserPage extends React.Component {
 
         if (this.state.searchedAds) {
             sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis</a>
+                <li className={this.state.activeTab === "Suche Ergebnis" ? "is-active" : undefined} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a href="#!">Suche Ergebnis {this.state.searchedAds.length}</a>
                 </li>
         }
 
         return (<>
 
             <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
+            <button onClick={() => { this.test() }}>Click me</button>
             <div className="tabs is-medium is-boxed is-centered">
                 <ul>
                     <li className={this.state.activeTab === "Übersicht" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve); this.updateRoutineBasic() }}><a href="#!">Übersicht</a>
@@ -191,3 +174,44 @@ export default class UserPage extends React.Component {
         )
     }
 }
+
+function MessageBoxWrapper(props) {
+    return (
+        <>
+            {Object.keys(props.conversation).map((entry) => <MessageBox key={entry} adId={entry} messages={props.conversation[entry]} sendMessage={(eve, adId, userId)=>{props.sendMessage(eve, adId, userId)}} />)}
+        </>
+    )
+}
+
+function MessageBox(props) {
+        return (
+            <div style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
+                <div>
+                    <div style={{ width: "50%" }}>
+                        <p>{props.adId}</p>
+                    </div>
+                    <div style={{ width: "50%" }}>
+                        <p>{props.adId}</p>
+                    </div>
+                    <div style={{ width: "100%" }}>
+                        {props.messages.map(mes => <Messages key={mes.id} mes={mes.text} />)}
+                    </div>
+                </div>
+                <form onSubmit={(eve) => { props.sendMessage(eve,props.adId,props.messages[props.messages.length-1].recipientUserId) }}>
+                    <input type="text" />
+                    <button type="submit">Antworten</button>
+                </form>
+            </div>
+        )
+}
+
+function Messages(props) {
+    return (
+        <div>{props.mes}</div> // {props.text}
+    )
+}
+
+
+
+
+

@@ -25,27 +25,52 @@ function updateRoutineUser() {
         .catch((err) => {
             console.log(err)
         })
-    this.props.getData("user/me/conversations", this.props.token)
-        .then((resss) => {
-            this.setState({ messageCenter: resss })
-            let newMap = new Map();
-            this.state.messageCenter.forEach((conversation) => {
-                this.props.getData(`/ad/${conversation.adId}/message/${conversation.userId}`, this.props.token)
-                    .then((res) => {
-                        newMap.set(conversation.adId, res)
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                    })
-            })
-            this.setState({messages: newMap})
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
     this.setState({
         lastEdit: new Date()
     })
+}
+function updateRoutineMessageCenter() {
+    this.props.getData("user/me/conversations", this.props.token)
+    .then((resss) => {
+        this.setState({ messageCenter: resss })
+
+        let messageAufbau = {}
+        this.state.messageCenter.forEach((conversation) => {
+            
+            
+
+
+            this.props.getData(`/ad/${conversation.adId}/message/${conversation.userId}`, this.props.token)
+                .then((res) => {
+
+                    if(Array.isArray(res)) {
+                        messageAufbau[conversation.adId] = res
+                    }
+           
+                    
+                })
+                .catch((err) => {
+                    // console.log(err)
+                })
+        })
+        this.setState({ messages: messageAufbau })
+
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+function messageUpdater(adId,userId) {
+    let messageAufbau = {}
+    this.props.getData(`/ad/${adId}/message/${userId}`, this.props.token)
+        .then((res) => {
+            messageAufbau[adId] = res
+            // newMap.set(conversation.adId, res)
+            this.setState({ messages: messageAufbau })
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 }
 //? Used by UserPage only
 function getAccountInfo() {
@@ -65,7 +90,7 @@ function deleteCreatedAd(adId) {
             console.log('res deleteSavedAd', res)
             alert("Anzeige erfolgreich gelöscht")
         })
-        .then(()=>{
+        .then(() => {
             this.updateRoutineUser()
         })
         .catch((err) => {
@@ -81,7 +106,7 @@ function patchCreatedAd(adId) {
             console.log('res patchData', res)
             alert("Anzeige erfolgreich geändert")
         })
-        .then(()=>{
+        .then(() => {
             this.updateRoutineUser()
         })
         .catch((err) => {
@@ -89,4 +114,4 @@ function patchCreatedAd(adId) {
             alert("Check Log for Details")
         })
 }
-export { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser }
+export { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser, messageUpdater, updateRoutineMessageCenter }
