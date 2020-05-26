@@ -10,6 +10,7 @@ import "react-bulma-components/dist/react-bulma-components.min.css";
 import { Hero } from "react-bulma-components/dist";
 import { useState } from 'react';
 import { userLogin, apiAccessGet, apiAccessPost, apiAccessPatch, apiAccessDelete } from './API/fetch_methods'
+import Footer from './components/Footer';
 // var Perf = require('react-addons-perf'); // ES5 with npm
 
 // * Regular methods implemented by responsible class
@@ -323,6 +324,7 @@ class Dapati extends React.Component {
                 <Header name={this.state.name} />
                 {userNav}
                 {maincontent}
+                <Footer />
             </>
         )
     }
