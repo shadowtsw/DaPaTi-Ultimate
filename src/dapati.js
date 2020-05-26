@@ -411,9 +411,7 @@ class UserPage extends React.Component {
         maincontent = content.get(this.state.activeTab)
 
         if (this.state.searchedAds) {
-            sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "is-info" && "is-light"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a>
-                </li>
+                sucheErgebnis = <li className={this.state.activeTab === "Suche Ergebnis" && "is-active"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a></li>
         }
 
         return (<>
@@ -524,9 +522,7 @@ class GuestPage extends React.Component {
         maincontent = content.get(this.state.activeTab);
 
         if (this.state.searchedAds) {
-            sucheErgebnis =
-                <li className={this.state.activeTab === "Suche Ergebnis" && "is-active" && "is-info" && "is-light"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis</a><span>({this.state.searchedAds.length})</span>
-                </li>
+            sucheErgebnis = <li className={this.state.activeTab === "Suche Ergebnis" && "is-active"} onClick={(eve) => { this.changeTab(eve, "Suche Ergebnis") }}><a>Suche Ergebnis ({this.state.searchedAds.length})</a></li>
         }
 
         return (
@@ -732,8 +728,8 @@ function Ad(props) {
 
     return (
         <article className="box column is-three-fifths is-offset-one-fifth">
-            <h3 className="title is-size-4">{props.ad.title}</h3>
-            <p className="content">{props.ad.description}</p>
+            <h3 className="title is-size-4">{(props.ad.title.length>80) ? props.ad.title.substring(0, 80)+'...':props.ad.title}</h3>
+            <p className="content">{(props.ad.description.length>80) ? props.ad.description.substring(0, 80)+'...':props.ad.description}</p>
             <button className="button is-info" onClick={() => { props.selectAd(props.ad.id) }}>Details</button>
         </article>
     )
