@@ -140,13 +140,8 @@ function patchCreatedAd(adId) {
     this.updateRoutineUser()
 }
 //? Used by UserPage and GuestPage
-<<<<<<< HEAD
 function selectAd(id, origin="") {
     // console.log(id)
-=======
-function selectAd(id, origin = "") {
-    console.log(id)
->>>>>>> 0ada62a7e30e381bd455d21273c504b6d3aa37b5
     if (origin === "Suche Ergebnis") {
         this.setState({
             singleAd: this.state.searchedAds.get(id)
@@ -429,21 +424,12 @@ class UserPage extends React.Component {
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
-<<<<<<< HEAD
-            ["Anzeige Aufgeben", <PostAdForm name={this.props.name}  email={this.props.email} submitHandler={this.props.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id}/></div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id}/></div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3><section className="section has-background-light"><div className='box has-background-white has-text-centered'>You have no current messages</div></section><br/></div>],
-            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p><br /></div>],
-            ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} />]
-=======
             ["Anzeige Aufgeben", <PostAdForm name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} /> </div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} /> </div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3></div>],
-            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3><section className="section has-background-light"><div className='box has-background-white has-text-centered'>You have no current messages</div></section><br/></div>],
+            ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p><br /></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />]
->>>>>>> 0ada62a7e30e381bd455d21273c504b6d3aa37b5
         ])
         maincontent = content.get(this.state.activeTab)
 
