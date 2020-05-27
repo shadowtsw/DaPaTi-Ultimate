@@ -85,10 +85,12 @@ function getAccountInfo() {
 }
 //? Used by UserPage
 function deleteCreatedAd(adId) {
-    this.props.deleteData(`ad/${adId}`, this.props.token, false)
+    let confMsg = window.confirm("Möchten Sie es tatsächlich löschen?");
+    if (confMsg === true) {
+        this.props.deleteData(`ad/${adId}`, this.props.token, false)
         .then((res) => {
             console.log('res deleteSavedAd', res)
-            alert("Anzeige erfolgreich gelöscht")
+            alert("Anzeige erfolgreich gelöscht");
         })
         .then(() => {
             this.updateRoutineUser()
@@ -97,6 +99,10 @@ function deleteCreatedAd(adId) {
             console.log('err deleteSavedAd', err)
             alert("Check Log for Details")
         })
+    } else {
+        alert("Nichts gelöscht");
+    }
+    
     this.updateRoutineUser()
 }
 //? Used by UserPage
