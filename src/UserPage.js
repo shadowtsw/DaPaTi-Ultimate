@@ -185,30 +185,29 @@ function MessageBoxWrapper(props) {
 
 function MessageBox(props) {
         return (
-            <div style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
+            <div className="box" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
                 <div>
                     <div style={{ width: "50%" }}>
-                        <p>{props.adId}</p>
-                    </div>
-                    <div style={{ width: "50%" }}>
-                        <p>{props.adId}</p>
+                        <p className="subtitle">{props.adId}</p>
+                        <hr />
                     </div>
                     <div style={{ width: "100%" }}>
                         {props.messages.map(mes => <Messages meineId={props.meineId} messageSenderId={mes.senderUserId} empfangsId={mes.recipientUserId} key={mes.id} mes={mes.text} />)}
                     </div>
+                    <br />
                 </div>
-                <form onSubmit={(eve) => { props.sendMessage(eve,props.adId,props.messages[props.messages.length-1].recipientUserId) }}>
-                    <input type="text" />
-                    <button type="submit">Antworten</button>
+                <form className="columns container" onSubmit={(eve) => { props.sendMessage(eve,props.adId,props.messages[props.messages.length-1].recipientUserId) }}>
+                    <input className="column is-8 input is-rounded has-background-light" type="text" />
+                    <button className="column is-rounded is-3 button is-fullheight is-info is-small" type="submit">Antworten</button>
                 </form>
             </div>
         )
 }
 
 function Messages(props) {
-    let person = (props.meineId === props.messageSenderId)?"Ich":"Er";
+    let person = (props.meineId === props.messageSenderId)?"has-text-right has-background-light":"has-text-left has-background-info has-text-white";
         return (
-        <div>{person} :: {props.mes}</div> // {props.text}
+        <div className={person+" box"}> {props.mes} </div> // {props.text}
         )
 }
 
