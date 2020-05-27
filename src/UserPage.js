@@ -129,9 +129,9 @@ export default class UserPage extends React.Component {
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.submitHandler} />],
-            ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
-            ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(adId,userId) => { this.writeMessage(adId,userId) }} /> </div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3> <MessageBoxWrapper meineId={this.props.id} conversation={this.state.messages} sendMessage={(eve, adId, userId)=>this.sendMessage(eve, adId, userId)} /> </div>], //<DisplayBox origin="Message Center" ads={this.state.messages}/>
+            ["Eigene Anzeigen", <div className="box has-background-light has-text-centered"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
+            ["Gespeicherte Anzeigen", <div className="box has-background-light has-text-centered"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(adId,userId) => { this.writeMessage(adId,userId) }} /> </div>],
+            ["Message Center", <div className="box has-background-light has-text-centered"><h3 className="title">Message Center</h3> <MessageBoxWrapper meineId={this.props.id} conversation={this.state.messages} sendMessage={(eve, adId, userId)=>this.sendMessage(eve, adId, userId)} /> </div>], //<DisplayBox origin="Message Center" ads={this.state.messages}/>
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
@@ -147,7 +147,6 @@ export default class UserPage extends React.Component {
         return (<>
 
             <SearchBar searchFunction={(eve) => this.searchFunction(eve)} />
-            <button onClick={() => { this.test() }}>Click me</button>
             <div className="tabs is-medium is-boxed is-centered">
                 <ul>
                     <li className={this.state.activeTab === "Übersicht" ? 'is-active' : undefined} onClick={(eve) => { this.changeTab(eve); this.updateRoutineBasic() }}><a href="#!">Übersicht</a>
@@ -178,37 +177,41 @@ export default class UserPage extends React.Component {
 
 function MessageBoxWrapper(props) {
     return (
-        <>
+        <section className="section columns">
             {Object.keys(props.conversation).map((entry) => <MessageBox meineId={props.meineId} key={entry} adId={entry} messages={props.conversation[entry]} sendMessage={(eve, adId, userId)=>{props.sendMessage(eve, adId, userId)}} />)}
-        </>
+        </section>
     )
 }
 
 function MessageBox(props) {
         return (
-            <div className="box" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
+            <section className="section column">
+            <article className="box container has-text-centered" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
                 <div>
-                    <div style={{ width: "50%" }}>
+                    <div>
                         <p className="subtitle">{props.adId}</p>
                         <hr />
                     </div>
-                    <div style={{ width: "100%" }}>
+                    <div>
                         {props.messages.map(mes => <Messages meineId={props.meineId} messageSenderId={mes.senderUserId} empfangsId={mes.recipientUserId} key={mes.id} mes={mes.text} />)}
                     </div>
                     <br />
                 </div>
                 <form className="columns container" onSubmit={(eve) => { props.sendMessage(eve,props.adId,props.messages[props.messages.length-1].recipientUserId) }}>
                     <input className="column is-8 input is-rounded has-background-light" type="text" />
-                    <button className="column is-rounded is-3 button is-fullheight is-info is-small" type="submit">Antworten</button>
+                    <div className="column"> </div>
+                    <button className=" button is-rounded is-link" type="submit">Antworten</button>
                 </form>
-            </div>
+                <br />
+            </article>
+            </section>
         )
 }
 
 function Messages(props) {
     let person = (props.meineId === props.messageSenderId)?"has-text-right has-background-light":"has-text-left has-background-info has-text-white";
         return (
-        <div className={person+" box"}> {props.mes} </div> // {props.text}
+        <div className={"box "+person}> {props.mes} </div> // {props.text}
         )
 }
 
