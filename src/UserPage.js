@@ -94,8 +94,23 @@ export default class UserPage extends React.Component {
                 console.log(res)
             })
             .then(()=>{
-                alert("Nachricht erfolgreich abgeschickt")
                 this.updateRoutineMessageCenter()
+                return ("update MessageCenter ok")
+            })
+            .then((res)=>{
+                console.log(res)
+                alert("Nachricht erfolgreich abgeschickt")
+                return ("Nachricht versendet")
+            })
+            .then((res)=>{
+                console.log(res)
+                this.setState({lastEdit:new Date()})
+                return ("Datum aktualisiert")
+            })
+            .then((res)=>{
+                console.log(res);
+                this.setState({activeTab: "Sendebestätigung"})
+                return ("Feedback")
             })
             .catch((err) => {
                 console.log(err)
@@ -131,6 +146,7 @@ export default class UserPage extends React.Component {
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
+            ["Sendebestätigung", <div className="box has-background-light has-text-centered"><h3>Nachricht versendet !!</h3><br/><button className="button is-small is-info" onClick={(eve)=>{this.changeTab(eve, "Message Center")}}>Zurück zum MessageCenter</button></div>]
         ])
         maincontent = content.get(this.state.activeTab)
 
