@@ -16,8 +16,7 @@ function SavedAd(props) {
                     <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
                 </div>
                 <button className="button is-warning" onClick={() => { props.editAd(props.ad.id) }}>Anzeige bearbeiten</button>
-                <button className="button is-danger" onClick={() => { props.deleteCreatedAd(props.ad.id) }}>Anzeige löschen</button>
-                <p>{props.meineId}</p>
+                <button className="button is-danger" onClick={() => { props.deleteCreatedAd(props.ad.id) }}>Anzeige löschen</button>                
             </article>
         )
     } else if(props.ad.userId){
