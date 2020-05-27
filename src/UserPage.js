@@ -54,28 +54,24 @@ export default class UserPage extends React.Component {
         this.props.postData(`user/me/saved-ad/${this.state.singleAd.id}`, this.props.token, "")
             .then((res) => {
                 // console.log('res saveAd', res)
-                alert("Anzeige erfolgreich gespeichert")
             })
             .then(() => {
                 this.updateRoutineUser()
             })
             .catch((err) => {
                 console.log('err saveAd', err)
-                alert("Check Log for Details???")
             })
     }
     deleteSavedAd(adId) {
         this.props.deleteData(`user/me/saved-ad/${adId}`, this.props.token, false)
             .then((res) => {
                 // console.log('res deleteSavedAd', res)
-                alert("Anzeige erfolgreich gelöscht")
             })
             .then(() => {
                 this.updateRoutineUser()
             })
             .catch((err) => {
                 console.log('err deleteSavedAd', err)
-                alert("Check Log for Details")
             })
     }
     editAd(id) {
