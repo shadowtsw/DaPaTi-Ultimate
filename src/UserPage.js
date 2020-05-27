@@ -173,7 +173,7 @@ export default class UserPage extends React.Component {
 
 function MessageBoxWrapper(props) {
     return (
-        <section className="section columns">
+        <section className="section columns is-desktop" style={{ display: "flex", flexWrap: "wrap" }}>
             {Object.keys(props.conversation).map((entry) => <MessageBox meineId={props.meineId} key={entry} adId={entry} messages={props.conversation[entry]} sendMessage={(eve, adId, userId)=>{props.sendMessage(eve, adId, userId)}} />)}
         </section>
     )
@@ -188,7 +188,7 @@ function MessageBox(props) {
             empfangsId = props.messages[0].recipientUserId
         }
         return (
-            <section className="section column">
+            <section className="section column is-half-desktop">
             <article className="box container has-text-centered" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
                 <div>
                     <div>
