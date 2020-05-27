@@ -12,7 +12,7 @@ export default function LoginBar(props) {
                             <input className="input is-small is-rounded" type="password" id="password" name="password" placeholder="Passwort" />
                         </div>
                         <div className="column">
-                            <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Eingelogt Bleiben
+                            <label className="label is-small" htmlFor="rememberLogin"><input className="is-small" type="checkbox" id="rememberLogin" onChange={props.rememberLogin} /> Eingeloggt Bleiben
                     </label>
                             <button className="button is-link is-small" type="submit">Login</button>
                         </div>
