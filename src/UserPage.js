@@ -131,7 +131,7 @@ export default class UserPage extends React.Component {
             ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(adId,userId) => { this.writeMessage(adId,userId) }} /> </div>],
-            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3> <MessageBoxWrapper conversation={this.state.messages} sendMessage={(eve, adId, userId)=>this.sendMessage(eve, adId, userId)} /> </div>], //<DisplayBox origin="Message Center" ads={this.state.messages}/>
+            ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3> <MessageBoxWrapper meineId={this.props.id} conversation={this.state.messages} sendMessage={(eve, adId, userId)=>this.sendMessage(eve, adId, userId)} /> </div>], //<DisplayBox origin="Message Center" ads={this.state.messages}/>
             ["Account-Info", <div className="box has-background-light"><h3 className="title">Account-Info</h3><p className="subtitle">ID: {this.state.userInfo.id}</p><p>Name: {this.state.userInfo.name}</p><p>Email: {this.state.userInfo.email}</p></div>],
             ["Einzelartikel", <SingleAd singleAd={this.state.singleAd} savedAds={this.state.savedAds} saveAd={() => { this.saveAd() }} token={this.props.token} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} />],
             ["Anzeige bearbeiten", <PostAdForm editAd={this.state.editAd} new={false} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandlerUpdate} />],
@@ -179,7 +179,7 @@ export default class UserPage extends React.Component {
 function MessageBoxWrapper(props) {
     return (
         <>
-            {Object.keys(props.conversation).map((entry) => <MessageBox key={entry} adId={entry} messages={props.conversation[entry]} sendMessage={(eve, adId, userId)=>{props.sendMessage(eve, adId, userId)}} />)}
+            {Object.keys(props.conversation).map((entry) => <MessageBox meineId={props.meineId} key={entry} adId={entry} messages={props.conversation[entry]} sendMessage={(eve, adId, userId)=>{props.sendMessage(eve, adId, userId)}} />)}
         </>
     )
 }
@@ -195,7 +195,7 @@ function MessageBox(props) {
                         <p>{props.adId}</p>
                     </div>
                     <div style={{ width: "100%" }}>
-                        {props.messages.map(mes => <Messages key={mes.id} mes={mes.text} />)}
+                        {props.messages.map(mes => <Messages meineId={props.meineId} messageSenderId={mes.senderUserId} empfangsId={mes.recipientUserId} key={mes.id} mes={mes.text} />)}
                     </div>
                 </div>
                 <form onSubmit={(eve) => { props.sendMessage(eve,props.adId,props.messages[props.messages.length-1].recipientUserId) }}>
@@ -207,9 +207,10 @@ function MessageBox(props) {
 }
 
 function Messages(props) {
-    return (
-        <div>{props.mes}</div> // {props.text}
-    )
+    let person = (props.meineId === props.messageSenderId)?"Ich":"Er";
+        return (
+        <div>{person} :: {props.mes}</div> // {props.text}
+        )
 }
 
 
