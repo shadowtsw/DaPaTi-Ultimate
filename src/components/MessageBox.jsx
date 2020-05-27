@@ -8,10 +8,10 @@ export default function MessageBox(props) {
     if(props.savedAds.get(props.adId)){
         articleTitle = props.savedAds.get(props.adId);
         articleTitle = articleTitle.title;
-    } else if(props.ownAds.get(props.adId)) {
+    } else if (props.ownAds.get(props.adId)) {
         articleTitle = props.ownAds.get(props.adId);
         articleTitle = articleTitle.title;
-    } else {
+    } else if (!props.ownAds.get(props.adId) || !props.savedAds.get(props.adId)) {
         articleTitle = "nicht verfügbar oder gelöscht"
     }
     if (props.messages[0].recipientUserId === props.meineId) {
