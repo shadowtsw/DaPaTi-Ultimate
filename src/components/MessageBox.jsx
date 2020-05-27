@@ -4,6 +4,16 @@ import Messages from './Messages';
 
 export default function MessageBox(props) {
     let empfangsId;
+    let articleTitle;
+    if(props.savedAds.get(props.adId)){
+        articleTitle = props.savedAds.get(props.adId);
+        articleTitle = articleTitle.title;
+    } else if(props.ownAds.get(props.adId)) {
+        articleTitle = props.ownAds.get(props.adId);
+        articleTitle = articleTitle.title;
+    } else {
+        articleTitle = "! nA !";
+    }
     if (props.messages[0].recipientUserId === props.meineId) {
         empfangsId = props.messages[0].senderUserId
     }
@@ -20,7 +30,8 @@ export default function MessageBox(props) {
         <section className="section column is-half-desktop">
             <article className="box container has-text-centered" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
                 <div>
-                    <p className="subtitle"><strong>Anzeige:</strong> {props.adId}</p>
+                    <p className="subtitle"><strong>Anzeige-ID:</strong> {props.adId}</p>
+                    <p className="subtitle"><strong>Anzeige:</strong> {articleTitle}</p>
                     <button className="button is-rounded is-small is-link" onClick={()=> toggleMessages()}>Toggle Nachrichten</button>
                     <hr />
                 </div>
