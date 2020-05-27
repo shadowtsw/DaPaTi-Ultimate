@@ -24,6 +24,7 @@ export default class UserPage extends React.Component {
         this.messageUpdater = messageUpdater.bind(this);
         this.updateRoutineMessageCenter = updateRoutineMessageCenter.bind(this);
         this.state = {
+            onStart: false,
             activeTab: "Übersicht",
             savedAds: null,
             searchedAds: null,
@@ -39,13 +40,15 @@ export default class UserPage extends React.Component {
             }
         }
     }
-    componentDidMount() {
-        this.updateRoutineBasic();
+
+    startup(){
+        this.updateRoutineBasic()
         this.updateRoutineUser()
         this.getAccountInfo();
         this.updateRoutineMessageCenter();
         this.messageUpdater();
-    };
+    }
+
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
             alert("Anzeige wurde bereits gespeichert, schau in deine Merkliste")
@@ -136,6 +139,8 @@ export default class UserPage extends React.Component {
     }
 
     render() {
+        if (this.state.onStart === false)
+        {this.startup(); this.setState({onStart: true})}
         let maincontent;
         let sucheErgebnis;
         let content = new Map([
