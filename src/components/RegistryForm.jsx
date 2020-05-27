@@ -5,7 +5,7 @@ function RegistryForm(props) {
   return (
       <form onSubmit={props.onSubmit}>
           <div id="registryform" className="box column is-three-fifths is-offset-one-fifth has-background-light">
-              <h1 className="title has-text-centered">Register</h1>
+              <h1 className="title has-text-centered">Registrieren</h1>
 
               <div className="field">
                   <label className="label">Namen</label>
