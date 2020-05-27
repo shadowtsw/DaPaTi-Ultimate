@@ -180,6 +180,13 @@ function MessageBoxWrapper(props) {
 }
 
 function MessageBox(props) {
+        let empfangsId;
+        if (props.messages[0].recipientUserId === props.meineId){
+            empfangsId = props.messages[0].senderUserId
+        }
+        else {
+            empfangsId = props.messages[0].recipientUserId
+        }
         return (
             <section className="section column">
             <article className="box container has-text-centered" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
@@ -193,7 +200,7 @@ function MessageBox(props) {
                     </div>
                     <br />
                 </div>
-                <form className="columns container" onSubmit={(eve) => { props.sendMessage(eve,props.adId,props.messages[props.messages.length-1].recipientUserId) }}>
+                <form className="columns container" onSubmit={(eve) => { props.sendMessage(eve,props.adId,empfangsId) }}>
                     <input className="column is-8 input is-rounded has-background-light" type="text" />
                     <div className="column"> </div>
                     <button className=" button is-rounded is-link" type="submit">Antworten</button>
