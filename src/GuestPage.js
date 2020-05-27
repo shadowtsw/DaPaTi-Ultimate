@@ -72,7 +72,7 @@ export default class GuestPage extends React.Component {
         let content = new Map([
             ['Übersicht', <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
-            ['Anzeige Aufgeben', <PostAdForm new={true} name={"Gast"} submitHandler={(eve) => this.submitHandler(eve)} />],
+            ['Anzeige Aufgeben', <PostAdForm new={true} name={"Gast"} submitHandler={this.submitHandler} />],
             ['Registrieren', <RegistryForm onSubmit={(eve) => { this.register(eve) }} />],
             ['Registrieren Erfolgreich', <RegistrySuccess userInfo={this.state.userInfo} />],
             ['Registrieren Fehlgeschlagen', <RegistryFail />],
