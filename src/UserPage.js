@@ -4,7 +4,7 @@ import DisplayBox from './components/DisplayBox';
 import PostAdForm from './components/PostAdForm';
 import SingleAd from './components/SingleAd';
 import SearchBar from './components/SearchBar';
-import { selectAd, updateRoutineBasic, searchFunction, changeTab } from './components/functions/user-and-guest-page-functions';
+import { selectAd, updateRoutineBasic, searchFunction, changeTab, submitHandler } from './components/functions/user-and-guest-page-functions';
 import { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser, messageUpdater, updateRoutineMessageCenter } from './components/functions/user-page-functions';
 
 //! MainComponent LoggedIn
@@ -12,6 +12,7 @@ export default class UserPage extends React.Component {
     constructor(props) {
         super(props);
         this.changeTab = changeTab.bind(this);
+        this.submitHandler = submitHandler.bind(this);
         this.searchFunction = searchFunction.bind(this);
         this.updateRoutineBasic = updateRoutineBasic.bind(this);
         this.updateRoutineUser = updateRoutineUser.bind(this);
@@ -127,7 +128,7 @@ export default class UserPage extends React.Component {
         let content = new Map([
             ["Übersicht", <DisplayBox ads={this.state.sortedAd} origin="Übersicht" selectAd={(id) => this.selectAd(id)} />],
             ["Suche Ergebnis", <DisplayBox ads={this.state.searchedAds} origin="Suche Ergebnis" selectAd={(id) => this.selectAd(id, "Suche Ergebnis")} />],
-            ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.props.submitHandler} />],
+            ["Anzeige Aufgeben", <PostAdForm new={true} name={this.props.name} email={this.props.email} submitHandler={this.submitHandler} />],
             ["Eigene Anzeigen", <div className="box has-background-light"><h3 className="title">Eigene Anzeigen</h3><DisplayBox ads={this.state.userAds} origin="Eigene Anzeigen" meineId={this.props.id} deleteCreatedAd={(id) => { this.deleteCreatedAd(id) }} editAd={(id) => { this.editAd(id) }} /> </div>],
             ["Gespeicherte Anzeigen", <div className="box has-background-light"><h3 className="title">Gespeicherte Anzeigen</h3><DisplayBox ads={this.state.savedAds} origin="Gespeicherte Anzeigen" meineId={this.props.id} deleteSavedAd={(id) => { this.deleteSavedAd(id) }} writeMessage={(adId,userId) => { this.writeMessage(adId,userId) }} /> </div>],
             ["Message Center", <div className="box has-background-light"><h3 className="title">Message Center</h3> <MessageBoxWrapper meineId={this.props.id} conversation={this.state.messages} sendMessage={(eve, adId, userId)=>this.sendMessage(eve, adId, userId)} /> </div>], //<DisplayBox origin="Message Center" ads={this.state.messages}/>

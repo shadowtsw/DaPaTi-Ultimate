@@ -196,6 +196,7 @@ class Dapati extends React.Component {
                 />;
             maincontent =
                 <UserPage
+                    tokenAvailable={this.state.tokenAvailable}
                     token={this.state.token}
                     name={this.state.name}
                     email={this.state.email}
@@ -216,6 +217,7 @@ class Dapati extends React.Component {
                     rememberLogin={(eve) => { this.rememberLogin(eve) }} />;
             maincontent =
                 <GuestPage
+                    tokenAvailable={this.state.tokenAvailable}
                     getData={this.getData}
                     postData={this.postData}
                     submitHandler={this.submitHandler}
