@@ -86,7 +86,7 @@ function getAccountInfo() {
 //? Used by UserPage
 function deleteCreatedAd(adId) {
     let confMsg = window.confirm("Möchten Sie es tatsächlich löschen?");
-    if (confMsg === true) {
+    if (confMsg) {
         this.props.deleteData(`ad/${adId}`, this.props.token, false)
         .then((res) => {
             console.log('res deleteSavedAd', res)
