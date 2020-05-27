@@ -39,7 +39,7 @@ export default function SingleAd(props) {
                     <p><b>Email:</b> {props.singleAd.email}</p>
                     <p><b>Ort:</b> {props.singleAd.location}</p>
                     <p><b>Ansprechpartner:</b> {props.singleAd.name}</p>
-                    <p><b>Preis:</b> {props.singleAd.price} € {props.singleAd.priceNegotiable && <span class="tag is-info">VB</span>}</p>
+                    <p><b>Preis:</b> {props.singleAd.price} € {props.singleAd.priceNegotiable && <span className="tag is-info">VB</span>}</p>
                 </div>
                 {button}
             </article>
