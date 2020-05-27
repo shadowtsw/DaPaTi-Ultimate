@@ -14,21 +14,21 @@ function PostAdForm(props) {
                     <div className="field">
                         <label className="label">Titel</label>
                         <div className="control">
-                            <input className="input" type="text" name="title" placeholder="Tolles Product Zur Verkaufen!" />
+                            <input className="input" type="text" name="title" placeholder="Tolles Product Zur Verkaufen!" required/>
                         </div>
                     </div>
 
                     <div className="field">
                         <label className="label">Namen</label>
                         <div className="control">
-                            <input className="input" type="text" name="name" defaultValue={username} placeholder={props.name} />
+                            <input className="input" type="text" name="name" defaultValue={username} placeholder={props.name} required/>
                         </div>
                     </div>
 
                     <div className="field">
                         <label className="label">Ort</label>
                         <div className="control">
-                            <input className="input" type="text" name="location" placeholder="Hamburg" />
+                            <input className="input" type="text" name="location" placeholder="Hamburg" required/>
                         </div>
                     </div>
 
@@ -42,7 +42,7 @@ function PostAdForm(props) {
                     <div className="field">
                         <label className="label">Beschreibung</label>
                         <div className="control">
-                            <textarea className="textarea" name="description" placeholder="Mein product ist toll, weil..." ></textarea>
+                            <textarea className="textarea" name="description" placeholder="Mein product ist toll, weil..." required></textarea>
                         </div>
                     </div>
 
