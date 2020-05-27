@@ -32,7 +32,7 @@ function SavedAd(props) {
                     <p><b>Ansprechpartner:</b> {props.ad.name}</p>
                     <p><b>Preis:</b> {props.ad.price} € {props.ad.priceNegotiable && <span class="tag is-info">VB</span>}</p>
                 </div>
-                <button className="button is-info" onClick={()=>{props.writeMessage(props.ad.id,props.ad.userId)}}>Mitteilung schreiben</button>
+                <button className="button is-link" onClick={()=>{props.writeMessage(props.ad.id,props.ad.userId)}}>Mitteilung schreiben</button>
                 <button className="button is-warning" onClick={() => { props.deleteSavedAd(props.ad.id) }}>Anzeige aus Merkliste löschen</button>
             </article>
         )
