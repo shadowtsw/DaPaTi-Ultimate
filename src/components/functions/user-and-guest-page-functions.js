@@ -54,7 +54,7 @@ function searchFunction(eve) {
             this.setState({ searchedAds: sortedAds })
         })
         .then(()=>{
-            this.updateRoutineUser()
+            this.updateRoutineBasic()
         })
         .catch((err) => {
             console.log('err', err)
