@@ -44,6 +44,7 @@ export default class UserPage extends React.Component {
         this.updateRoutineUser()
         this.getAccountInfo();
         this.updateRoutineMessageCenter();
+        this.messageUpdater();
     };
     saveAd() {
         if (this.state.savedAds.get(this.state.singleAd.id)) {
