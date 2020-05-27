@@ -12,7 +12,7 @@ export default function MessageBox(props) {
         articleTitle = props.ownAds.get(props.adId);
         articleTitle = articleTitle.title;
     } else {
-        articleTitle = "! nA !";
+        articleTitle = "nicht verfügbar oder gelöscht"
     }
     if (props.messages[0].recipientUserId === props.meineId) {
         empfangsId = props.messages[0].senderUserId
