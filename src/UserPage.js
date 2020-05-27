@@ -6,6 +6,7 @@ import SingleAd from './components/SingleAd';
 import SearchBar from './components/SearchBar';
 import { selectAd, updateRoutineBasic, searchFunction, changeTab, submitHandler } from './components/functions/user-and-guest-page-functions';
 import { patchCreatedAd, deleteCreatedAd, getAccountInfo, updateRoutineUser, messageUpdater, updateRoutineMessageCenter } from './components/functions/user-page-functions';
+import MessageBoxWrapper from './components/MessageBoxWrapper';
 
 //! MainComponent LoggedIn
 export default class UserPage extends React.Component {
@@ -170,55 +171,3 @@ export default class UserPage extends React.Component {
         )
     }
 }
-
-function MessageBoxWrapper(props) {
-    return (
-        <section className="section columns is-desktop" style={{ display: "flex", flexWrap: "wrap" }}>
-            {Object.keys(props.conversation).map((entry) => <MessageBox meineId={props.meineId} key={entry} adId={entry} messages={props.conversation[entry]} sendMessage={(eve, adId, userId)=>{props.sendMessage(eve, adId, userId)}} />)}
-        </section>
-    )
-}
-
-function MessageBox(props) {
-        let empfangsId;
-        if (props.messages[0].recipientUserId === props.meineId){
-            empfangsId = props.messages[0].senderUserId
-        }
-        else {
-            empfangsId = props.messages[0].recipientUserId
-        }
-        return (
-            <section className="section column is-half-desktop">
-            <article className="box container has-text-centered" style={{ width: "400px", display: "flex", flexWrap: "wrap" }}>
-                <div>
-                    <div>
-                        <p className="subtitle">{props.adId}</p>
-                        <hr />
-                    </div>
-                    <div>
-                        {props.messages.map(mes => <Messages meineId={props.meineId} messageSenderId={mes.senderUserId} empfangsId={mes.recipientUserId} key={mes.id} mes={mes.text} />)}
-                    </div>
-                    <br />
-                </div>
-                <form className="columns container" onSubmit={(eve) => { props.sendMessage(eve,props.adId,empfangsId) }}>
-                    <input className="column is-8 input is-rounded has-background-light" type="text" />
-                    <div className="column"> </div>
-                    <button className=" button is-rounded is-link" type="submit">Antworten</button>
-                </form>
-                <br />
-            </article>
-            </section>
-        )
-}
-
-function Messages(props) {
-    let person = (props.meineId === props.messageSenderId)?"has-text-right has-background-light":"has-text-left has-background-info has-text-white";
-        return (
-        <div className={"box "+person}> {props.mes} </div> // {props.text}
-        )
-}
-
-
-
-
-
